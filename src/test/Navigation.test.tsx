@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import Navigation from "../components/Navigation";
 
 // Mock ThemeToggle to simplify tests
@@ -8,14 +9,21 @@ vi.mock("../components/ThemeToggle", () => ({
 }));
 
 describe("Navigation", () => {
+  const renderNavigation = (route = "/") =>
+    render(
+      <MemoryRouter initialEntries={[route]}>
+        <Navigation />
+      </MemoryRouter>,
+    );
+
   it("renders the logo", () => {
-    render(<Navigation />);
+    renderNavigation();
     expect(screen.getByText("azizkhan")).toBeInTheDocument();
     expect(screen.getByText(".dev")).toBeInTheDocument();
   });
 
   it("renders all navigation items on desktop", () => {
-    render(<Navigation />);
+    renderNavigation();
     expect(screen.getByText("Services")).toBeInTheDocument();
     expect(screen.getByText("Projects")).toBeInTheDocument();
     expect(screen.getByText("Skills")).toBeInTheDocument();
@@ -24,18 +32,18 @@ describe("Navigation", () => {
   });
 
   it("has correct navigation links", () => {
-    render(<Navigation />);
+    renderNavigation();
     const servicesLinks = screen.getAllByText("Services");
     expect(servicesLinks[0].closest("a")).toHaveAttribute("href", "#services");
   });
 
   it("has accessible navigation role", () => {
-    render(<Navigation />);
+    renderNavigation();
     expect(screen.getByRole("navigation")).toHaveAttribute("aria-label", "Main navigation");
   });
 
   it("toggles mobile menu on button click", () => {
-    render(<Navigation />);
+    renderNavigation();
     const menuButton = screen.getByLabelText("Open menu");
 
     fireEvent.click(menuButton);
@@ -44,7 +52,7 @@ describe("Navigation", () => {
   });
 
   it("closes mobile menu on Escape key", () => {
-    render(<Navigation />);
+    renderNavigation();
     const menuButton = screen.getByLabelText("Open menu");
 
     fireEvent.click(menuButton);
@@ -55,7 +63,7 @@ describe("Navigation", () => {
   });
 
   it("renders theme toggle", () => {
-    render(<Navigation />);
+    renderNavigation();
     expect(screen.getAllByTestId("theme-toggle").length).toBeGreaterThan(0);
   });
 });

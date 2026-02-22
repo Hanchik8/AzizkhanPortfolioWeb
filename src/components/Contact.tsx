@@ -22,6 +22,9 @@ type FormStatus = "idle" | "submitting" | "success" | "error";
 
 const Contact = () => {
   const [status, setStatus] = useState<FormStatus>("idle");
+  const web3FormsKey = (import.meta.env.VITE_WEB3FORMS_KEY ?? "").trim();
+  const isContactFormConfigured =
+    web3FormsKey.length > 0 && web3FormsKey !== "YOUR_ACCESS_KEY_HERE";
 
   const {
     register,
@@ -33,6 +36,13 @@ const Contact = () => {
   });
 
   const onSubmit = async (data: ContactFormData) => {
+    if (!isContactFormConfigured) {
+      toast.info("Contact form is not configured in this build", {
+        description: `Please email me directly at ${siteConfig.email}`,
+      });
+      return;
+    }
+
     setStatus("submitting");
 
     try {
@@ -44,7 +54,7 @@ const Contact = () => {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: import.meta.env.VITE_WEB3FORMS_KEY || "YOUR_ACCESS_KEY_HERE",
+          access_key: web3FormsKey,
           name: data.name,
           email: data.email,
           subject: data.subject,
@@ -162,6 +172,23 @@ const Contact = () => {
           <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="mb-6 font-mono text-lg font-semibold">Send a Message</h3>
 
+            {!isContactFormConfigured && (
+              <div className="mb-6 rounded-lg border border-primary/20 bg-primary/5 p-4">
+                <p className="mb-2 font-mono text-xs text-primary">// form temporarily disabled</p>
+                <p className="mb-3 text-sm text-muted-foreground">
+                  The contact API key is not configured yet in this build. You can still reach me
+                  directly by email.
+                </p>
+                <a
+                  href={`mailto:${siteConfig.email}`}
+                  className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-background px-3 py-2 font-mono text-sm text-primary transition-colors hover:bg-primary/5"
+                >
+                  <Mail className="h-4 w-4" aria-hidden="true" />
+                  {siteConfig.email}
+                </a>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
@@ -169,6 +196,7 @@ const Contact = () => {
                   id="name"
                   placeholder="Your name"
                   {...register("name")}
+                  disabled={!isContactFormConfigured || status === "submitting"}
                   className={errors.name ? "border-destructive" : ""}
                 />
                 {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
@@ -181,6 +209,7 @@ const Contact = () => {
                   type="email"
                   placeholder="your@email.com"
                   {...register("email")}
+                  disabled={!isContactFormConfigured || status === "submitting"}
                   className={errors.email ? "border-destructive" : ""}
                 />
                 {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
@@ -192,6 +221,7 @@ const Contact = () => {
                   id="subject"
                   placeholder="What's this about?"
                   {...register("subject")}
+                  disabled={!isContactFormConfigured || status === "submitting"}
                   className={errors.subject ? "border-destructive" : ""}
                 />
                 {errors.subject && (
@@ -206,6 +236,7 @@ const Contact = () => {
                   placeholder="Your message..."
                   rows={4}
                   {...register("message")}
+                  disabled={!isContactFormConfigured || status === "submitting"}
                   className={`flex min-h-[120px] w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.message ? "border-destructive" : ""}`}
                 />
                 {errors.message && (
@@ -213,8 +244,17 @@ const Contact = () => {
                 )}
               </div>
 
-              <Button type="submit" className="w-full" disabled={status === "submitting"}>
-                {status === "submitting" ? (
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={status === "submitting" || !isContactFormConfigured}
+              >
+                {!isContactFormConfigured ? (
+                  <>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Email me directly
+                  </>
+                ) : status === "submitting" ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Sending...

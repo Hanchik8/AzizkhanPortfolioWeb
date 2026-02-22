@@ -1,18 +1,46 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Terminal } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { cn } from "@/lib/utils";
 
-const navItems = [
-  { label: "Services", href: "#services" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+type NavItem =
+  | { type: "route"; label: string; to: string; end?: boolean }
+  | { type: "anchor"; label: string; href: string };
+
+const homeNavItems: NavItem[] = [
+  { type: "anchor", label: "Services", href: "#services" },
+  { type: "route", label: "Projects", to: "/projects" },
+  { type: "route", label: "Notes", to: "/notes" },
+  { type: "route", label: "Now", to: "/now" },
+  { type: "anchor", label: "Skills", href: "#skills" },
+  { type: "route", label: "About", to: "/about" },
+  { type: "anchor", label: "Contact", href: "#contact" },
 ];
+
+const innerPageNavItems: NavItem[] = [
+  { type: "route", label: "Home", to: "/", end: true },
+  { type: "route", label: "Projects", to: "/projects" },
+  { type: "route", label: "Notes", to: "/notes" },
+  { type: "route", label: "Now", to: "/now" },
+  { type: "route", label: "About", to: "/about" },
+  { type: "anchor", label: "Contact", href: "/#contact" },
+];
+
+const desktopItemClass =
+  "group flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground";
+const mobileItemClass =
+  "flex items-center gap-2 py-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+
+  const navItems = useMemo(
+    () => (location.pathname === "/" ? homeNavItems : innerPageNavItems),
+    [location.pathname],
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,6 +67,60 @@ const Navigation = () => {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname, location.hash]);
+
+  const renderDesktopItem = (item: NavItem, index: number) => {
+    if (item.type === "anchor") {
+      return (
+        <a key={item.label} href={item.href} className={desktopItemClass}>
+          <span className="text-xs text-primary">0{index + 1}.</span>
+          <span className="transition-colors group-hover:text-primary">{item.label}</span>
+        </a>
+      );
+    }
+
+    return (
+      <NavLink
+        key={item.label}
+        to={item.to}
+        end={item.end}
+        className={({ isActive }) =>
+          cn(desktopItemClass, isActive && "text-foreground", isActive && "[&_span:last-child]:text-primary")
+        }
+      >
+        <span className="text-xs text-primary">0{index + 1}.</span>
+        <span className="transition-colors group-hover:text-primary">{item.label}</span>
+      </NavLink>
+    );
+  };
+
+  const renderMobileItem = (item: NavItem, index: number) => {
+    if (item.type === "anchor") {
+      return (
+        <a key={item.label} href={item.href} onClick={() => setIsOpen(false)} className={mobileItemClass} role="menuitem">
+          <span className="text-xs text-primary">0{index + 1}.</span>
+          <span>{item.label}</span>
+        </a>
+      );
+    }
+
+    return (
+      <NavLink
+        key={item.label}
+        to={item.to}
+        end={item.end}
+        onClick={() => setIsOpen(false)}
+        className={({ isActive }) => cn(mobileItemClass, isActive && "text-foreground")}
+        role="menuitem"
+      >
+        <span className="text-xs text-primary">0{index + 1}.</span>
+        <span>{item.label}</span>
+      </NavLink>
+    );
+  };
+
   return (
     <nav
       className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
@@ -49,29 +131,17 @@ const Navigation = () => {
     >
       <div className="container">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-2 font-mono text-lg font-semibold">
+          <Link to="/" className="flex items-center gap-2 font-mono text-lg font-semibold">
             <Terminal className="h-5 w-5 text-primary" aria-hidden="true" />
             <span className="text-foreground">azizkhan</span>
             <span className="text-primary">.dev</span>
-          </a>
+          </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden items-center gap-8 md:flex">
-            {navItems.map((item, index) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="group flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <span className="text-xs text-primary">0{index + 1}.</span>
-                <span className="transition-colors group-hover:text-primary">{item.label}</span>
-              </a>
-            ))}
+          <div className="hidden items-center gap-6 md:flex">
+            {navItems.map((item, index) => renderDesktopItem(item, index))}
             <ThemeToggle />
           </div>
 
-          {/* Mobile menu button */}
           <div className="flex items-center gap-2 md:hidden">
             <ThemeToggle />
             <button
@@ -86,27 +156,9 @@ const Navigation = () => {
           </div>
         </div>
 
-        {/* Mobile nav */}
         {isOpen && (
-          <div
-            id="mobile-menu"
-            className="animate-fade-in border-t border-border py-4 md:hidden"
-            role="menu"
-          >
-            <div className="flex flex-col gap-4">
-              {navItems.map((item, index) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-2 py-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  role="menuitem"
-                >
-                  <span className="text-xs text-primary">0{index + 1}.</span>
-                  <span>{item.label}</span>
-                </a>
-              ))}
-            </div>
+          <div id="mobile-menu" className="animate-fade-in border-t border-border py-4 md:hidden" role="menu">
+            <div className="flex flex-col gap-4">{navItems.map((item, index) => renderMobileItem(item, index))}</div>
           </div>
         )}
       </div>

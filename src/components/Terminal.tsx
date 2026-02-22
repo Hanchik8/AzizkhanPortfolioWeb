@@ -28,6 +28,7 @@ const Terminal = () => {
   const [showAscii, setShowAscii] = useState(false);
   const [visibleLines, setVisibleLines] = useState<number>(0);
   const [isTyping, setIsTyping] = useState(true);
+  const logDate = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
     // Show ASCII art first
@@ -101,7 +102,7 @@ const Terminal = () => {
                     <span className="font-bold text-primary">{line.text}</span>
                   ) : line.prefix === "INFO" ? (
                     <>
-                      <span className="text-muted-foreground">2025-01-20</span>
+                      <span className="text-muted-foreground">{logDate}</span>
                       <span className="text-primary">{line.prefix}</span>
                       <span className="text-foreground">{line.text}</span>
                     </>
@@ -114,7 +115,7 @@ const Terminal = () => {
               {/* Cursor */}
               {isTyping && visibleLines === terminalLines.length && (
                 <div className="mt-2 flex items-center gap-2">
-                  <span className="text-muted-foreground">2025-01-20</span>
+                  <span className="text-muted-foreground">{logDate}</span>
                   <span className="text-primary">INFO</span>
                   <span className="cursor-blink h-4 w-2 bg-primary" />
                 </div>
