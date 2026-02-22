@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { useTheme } from "../components/theme-context";
@@ -63,5 +63,51 @@ describe("ThemeProvider", () => {
     // Set to dark
     fireEvent.click(screen.getByText("Set Dark"));
     expect(document.documentElement.classList.contains("dark")).toBe(true);
+  });
+
+  it("falls back to system theme when localStorage access fails", () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("Storage access denied");
+    });
+
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    );
+
+    expect(screen.getByTestId("current-theme")).toHaveTextContent("system");
+    getItemSpy.mockRestore();
+  });
+
+  it("supports legacy matchMedia listeners", () => {
+    const addListener = vi.fn();
+    const removeListener = vi.fn();
+
+    const originalMatchMedia = window.matchMedia;
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: (query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener,
+        removeListener,
+        dispatchEvent: () => true,
+      }),
+    });
+
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    );
+
+    expect(addListener).toHaveBeenCalledTimes(1);
+
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: originalMatchMedia,
+    });
   });
 });

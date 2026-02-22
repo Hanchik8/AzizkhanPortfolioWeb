@@ -34,7 +34,20 @@ describe("Navigation", () => {
   it("has correct navigation links", () => {
     renderNavigation();
     const servicesLinks = screen.getAllByText("Services");
-    expect(servicesLinks[0].closest("a")).toHaveAttribute("href", "#services");
+    expect(servicesLinks[0].closest("a")).toHaveAttribute("href", "/#services");
+  });
+
+  it("uses the same header items on inner pages", () => {
+    renderNavigation("/projects");
+
+    expect(screen.getByText("Services")).toBeInTheDocument();
+    expect(screen.getByText("Projects")).toBeInTheDocument();
+    expect(screen.getByText("Skills")).toBeInTheDocument();
+    expect(screen.getByText("About")).toBeInTheDocument();
+    expect(screen.getByText("Contact")).toBeInTheDocument();
+    expect(screen.getByText("Notes")).toBeInTheDocument();
+    expect(screen.getByText("Now")).toBeInTheDocument();
+    expect(screen.queryByText("Home")).not.toBeInTheDocument();
   });
 
   it("has accessible navigation role", () => {

@@ -5,41 +5,39 @@ import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 
 type NavItem =
-  | { type: "route"; label: string; to: string; end?: boolean }
-  | { type: "anchor"; label: string; href: string };
+  | { type: "route"; label: string; to: string; end?: boolean; group?: "primary" | "secondary" }
+  | { type: "anchor"; label: string; href: string; group?: "primary" | "secondary" };
 
-const homeNavItems: NavItem[] = [
-  { type: "anchor", label: "Services", href: "#services" },
+const navItemsConfig: NavItem[] = [
+  { type: "anchor", label: "Services", href: "/#services" },
   { type: "route", label: "Projects", to: "/projects" },
-  { type: "route", label: "Notes", to: "/notes" },
-  { type: "route", label: "Now", to: "/now" },
-  { type: "anchor", label: "Skills", href: "#skills" },
-  { type: "route", label: "About", to: "/about" },
-  { type: "anchor", label: "Contact", href: "#contact" },
-];
-
-const innerPageNavItems: NavItem[] = [
-  { type: "route", label: "Home", to: "/", end: true },
-  { type: "route", label: "Projects", to: "/projects" },
-  { type: "route", label: "Notes", to: "/notes" },
-  { type: "route", label: "Now", to: "/now" },
+  { type: "anchor", label: "Skills", href: "/#skills" },
   { type: "route", label: "About", to: "/about" },
   { type: "anchor", label: "Contact", href: "/#contact" },
+  { type: "route", label: "Notes", to: "/notes", group: "secondary" },
+  { type: "route", label: "Now", to: "/now", group: "secondary" },
 ];
 
 const desktopItemClass =
-  "group flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground";
+  "group flex items-center font-mono text-sm text-muted-foreground transition-colors hover:text-foreground";
+const desktopSecondaryItemClass =
+  "rounded-md px-2.5 py-1.5 font-mono text-sm text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary";
 const mobileItemClass =
-  "flex items-center gap-2 py-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground";
+  "flex items-center py-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
-  const navItems = useMemo(
-    () => (location.pathname === "/" ? homeNavItems : innerPageNavItems),
-    [location.pathname],
+  const navItems = useMemo(() => navItemsConfig, []);
+  const primaryNavItems = useMemo(
+    () => navItems.filter((item) => item.group !== "secondary"),
+    [navItems],
+  );
+  const secondaryNavItems = useMemo(
+    () => navItems.filter((item) => item.group === "secondary"),
+    [navItems],
   );
 
   useEffect(() => {
@@ -71,11 +69,12 @@ const Navigation = () => {
     setIsOpen(false);
   }, [location.pathname, location.hash]);
 
-  const renderDesktopItem = (item: NavItem, index: number) => {
+  const renderDesktopItem = (item: NavItem, variant: "primary" | "secondary" = "primary") => {
+    const itemClass = variant === "secondary" ? desktopSecondaryItemClass : desktopItemClass;
+
     if (item.type === "anchor") {
       return (
-        <a key={item.label} href={item.href} className={desktopItemClass}>
-          <span className="text-xs text-primary">0{index + 1}.</span>
+        <a key={item.label} href={item.href} className={itemClass}>
           <span className="transition-colors group-hover:text-primary">{item.label}</span>
         </a>
       );
@@ -87,20 +86,29 @@ const Navigation = () => {
         to={item.to}
         end={item.end}
         className={({ isActive }) =>
-          cn(desktopItemClass, isActive && "text-foreground", isActive && "[&_span:last-child]:text-primary")
+          cn(
+            itemClass,
+            variant === "primary" && isActive && "text-foreground",
+            variant === "primary" && isActive && "[&_span:last-child]:text-primary",
+            variant === "secondary" && isActive && "bg-primary/10 text-primary",
+          )
         }
       >
-        <span className="text-xs text-primary">0{index + 1}.</span>
         <span className="transition-colors group-hover:text-primary">{item.label}</span>
       </NavLink>
     );
   };
 
-  const renderMobileItem = (item: NavItem, index: number) => {
+  const renderMobileItem = (item: NavItem) => {
     if (item.type === "anchor") {
       return (
-        <a key={item.label} href={item.href} onClick={() => setIsOpen(false)} className={mobileItemClass} role="menuitem">
-          <span className="text-xs text-primary">0{index + 1}.</span>
+        <a
+          key={item.label}
+          href={item.href}
+          onClick={() => setIsOpen(false)}
+          className={mobileItemClass}
+          role="menuitem"
+        >
           <span>{item.label}</span>
         </a>
       );
@@ -115,7 +123,6 @@ const Navigation = () => {
         className={({ isActive }) => cn(mobileItemClass, isActive && "text-foreground")}
         role="menuitem"
       >
-        <span className="text-xs text-primary">0{index + 1}.</span>
         <span>{item.label}</span>
       </NavLink>
     );
@@ -138,7 +145,20 @@ const Navigation = () => {
           </Link>
 
           <div className="hidden items-center gap-6 md:flex">
-            {navItems.map((item, index) => renderDesktopItem(item, index))}
+            <div className="flex items-center gap-6">
+              {primaryNavItems.map((item) => renderDesktopItem(item))}
+            </div>
+
+            {secondaryNavItems.length > 0 && (
+              <>
+                <div className="h-5 w-px bg-border/80" aria-hidden="true" />
+                <div className="flex items-center gap-1 rounded-full border border-border/80 bg-card/60 p-1">
+                  {secondaryNavItems.map((item) => renderDesktopItem(item, "secondary"))}
+                </div>
+              </>
+            )}
+
+            <div className="h-5 w-px bg-border/80" aria-hidden="true" />
             <ThemeToggle />
           </div>
 
@@ -158,7 +178,23 @@ const Navigation = () => {
 
         {isOpen && (
           <div id="mobile-menu" className="animate-fade-in border-t border-border py-4 md:hidden" role="menu">
-            <div className="flex flex-col gap-4">{navItems.map((item, index) => renderMobileItem(item, index))}</div>
+            <div className="space-y-4">
+              <div>
+                <p className="mb-2 font-mono text-xs text-primary/80">// navigation</p>
+                <div className="flex flex-col gap-2">
+                  {primaryNavItems.map((item) => renderMobileItem(item))}
+                </div>
+              </div>
+
+              {secondaryNavItems.length > 0 && (
+                <div className="border-t border-border pt-4">
+                  <p className="mb-2 font-mono text-xs text-primary/80">// pages</p>
+                  <div className="flex flex-col gap-2">
+                    {secondaryNavItems.map((item) => renderMobileItem(item))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

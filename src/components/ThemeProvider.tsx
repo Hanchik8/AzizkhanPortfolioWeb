@@ -1,10 +1,22 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { ThemeContext, getSystemTheme, STORAGE_KEY, type Theme } from "./theme-context";
+import {
+  ThemeContext,
+  getSystemTheme,
+  isTheme,
+  STORAGE_KEY,
+  type Theme,
+} from "./theme-context";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window === "undefined") return "system";
-    return (localStorage.getItem(STORAGE_KEY) as Theme) || "system";
+
+    try {
+      const storedTheme = localStorage.getItem(STORAGE_KEY);
+      return isTheme(storedTheme) ? storedTheme : "system";
+    } catch {
+      return "system";
+    }
   });
 
   const resolvedTheme = theme === "system" ? getSystemTheme() : theme;
@@ -16,6 +28,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [resolvedTheme]);
 
   useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () => {
       if (theme === "system") {
@@ -25,13 +39,24 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         root.classList.add(newTheme);
       }
     };
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
   }, [theme]);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem(STORAGE_KEY, newTheme);
+
+    try {
+      localStorage.setItem(STORAGE_KEY, newTheme);
+    } catch {
+      // Ignore storage failures (privacy mode / blocked storage).
+    }
   };
 
   return (

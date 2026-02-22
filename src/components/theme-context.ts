@@ -12,6 +12,10 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(undefine
 
 export const STORAGE_KEY = "azizkhan-dev-theme";
 
+export function isTheme(value: unknown): value is Theme {
+  return value === "light" || value === "dark" || value === "system";
+}
+
 export function getSystemTheme(): "dark" | "light" {
   if (typeof window === "undefined") return "dark";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
