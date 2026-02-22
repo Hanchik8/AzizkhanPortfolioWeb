@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays, Clock3, FileText, Tag } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
 import NotFound from "@/pages/NotFound";
-import { getNoteBySlug, notes } from "@/content/notes";
+import { getNoteBySlug, notes, type NoteBlock } from "@/content/notes";
 
 const NoteDetailsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -102,40 +102,18 @@ const NoteDetailsPage = () => {
                   <span className="font-mono text-sm text-primary">02.</span>
                   <h2 className="font-mono text-xl font-semibold">Article Body</h2>
                 </div>
-                <p className="mb-4 leading-relaxed text-muted-foreground">
-                  This page is already wired for detailed note content, but the full article text is
-                  intentionally left for later. For now, this acts as a structured note detail page
-                  with summary + takeaways + related topics.
-                </p>
 
-                <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-                  <p className="mb-2 font-mono text-xs text-primary">// ready for future content</p>
-                  <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
-                    When you are ready, expand the corresponding entry in
-                    <code className="mx-1 rounded bg-background px-1.5 py-0.5 text-xs">
-                      src/content/notes.ts
-                    </code>
-                    (or move notes into markdown/MDX later).
-                  </p>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="mt-0.5 font-mono text-xs text-primary">{">"}</span>
-                      <span>Problem / context</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="mt-0.5 font-mono text-xs text-primary">{">"}</span>
-                      <span>What you tried / decision made</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="mt-0.5 font-mono text-xs text-primary">{">"}</span>
-                      <span>Tradeoffs / mistakes / lessons</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="mt-0.5 font-mono text-xs text-primary">{">"}</span>
-                      <span>Reference links or code snippets</span>
-                    </li>
-                  </ul>
-                </div>
+                {note.status === "draft" && (
+                  <div className="mb-5 rounded-lg border border-primary/20 bg-primary/5 p-4">
+                    <p className="mb-1 font-mono text-xs text-primary">// draft note</p>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      This note is still in progress. The current content is a working outline and
+                      will be expanded later.
+                    </p>
+                  </div>
+                )}
+
+                <NoteContentRenderer blocks={note.content} />
               </section>
 
               <section className="rounded-xl border border-border bg-card p-6">
@@ -228,6 +206,95 @@ const NoteDetailsPage = () => {
         </div>
       </section>
     </SiteLayout>
+  );
+};
+
+const NoteContentRenderer = ({ blocks }: { blocks: NoteBlock[] }) => {
+  if (blocks.length === 0) {
+    return (
+      <p className="leading-relaxed text-muted-foreground">
+        No article content yet. Add blocks in `src/content/notes.ts`.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-5">
+      {blocks.map((block, index) => {
+        const key = `${block.type}-${index}`;
+
+        if (block.type === "paragraph") {
+          return (
+            <p key={key} className="leading-relaxed text-muted-foreground">
+              {block.text}
+            </p>
+          );
+        }
+
+        if (block.type === "heading") {
+          return (
+            <h3 key={key} className="font-mono text-lg font-semibold text-foreground">
+              {block.text}
+            </h3>
+          );
+        }
+
+        if (block.type === "quote") {
+          return (
+            <blockquote
+              key={key}
+              className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 font-mono text-sm leading-relaxed text-primary/90"
+            >
+              "{block.text}"
+            </blockquote>
+          );
+        }
+
+        if (block.type === "code") {
+          return (
+            <div key={key} className="rounded-lg border border-border bg-background/60 p-4">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <span className="font-mono text-xs text-primary">{block.language}</span>
+                {block.caption && (
+                  <span className="text-right text-xs text-muted-foreground">{block.caption}</span>
+                )}
+              </div>
+              <pre className="overflow-x-auto rounded border border-border/70 bg-background p-3">
+                <code className="font-mono text-xs text-foreground sm:text-sm">{block.code}</code>
+              </pre>
+            </div>
+          );
+        }
+
+        if (block.type === "list") {
+          const ListTag = block.ordered ? "ol" : "ul";
+
+          return (
+            <ListTag
+              key={key}
+              className={`space-y-2 ${
+                block.ordered ? "list-inside list-decimal text-muted-foreground" : ""
+              }`}
+            >
+              {block.items.map((item) =>
+                block.ordered ? (
+                  <li key={item} className="leading-relaxed">
+                    {item}
+                  </li>
+                ) : (
+                  <li key={item} className="flex items-start gap-3 text-muted-foreground">
+                    <span className="mt-0.5 font-mono text-xs text-primary">{">"}</span>
+                    <span>{item}</span>
+                  </li>
+                ),
+              )}
+            </ListTag>
+          );
+        }
+
+        return null;
+      })}
+    </div>
   );
 };
 
