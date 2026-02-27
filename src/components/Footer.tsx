@@ -1,52 +1,101 @@
-import { Github, Linkedin, Send, Heart } from "lucide-react";
+import { Github, Linkedin, Send, Heart, Terminal } from "lucide-react";
+import { Link } from "react-router-dom";
 import { siteConfig } from "@/content/siteConfig";
+
+const footerLinks = [
+  { label: "Projects", to: "/projects" },
+  { label: "About", to: "/about" },
+  { label: "Notes", to: "/notes" },
+  { label: "Now", to: "/now" },
+];
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border py-12">
-      <div className="container">
-        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-          {/* Left */}
-          <div className="flex items-center gap-2 text-muted-foreground">
+    <footer className="border-t border-border">
+      <div className="container py-10">
+        <div className="mb-8 grid gap-8 md:grid-cols-3">
+          {/* Brand */}
+          <div>
+            <Link to="/" className="mb-3 flex items-center gap-2 font-mono text-base font-semibold">
+              <Terminal className="h-4 w-4 text-primary" aria-hidden="true" />
+              <span className="text-foreground">azizkhan</span>
+              <span className="text-primary">.dev</span>
+            </Link>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {siteConfig.title} based in {siteConfig.location}. Building modern web apps with clean
+              code.
+            </p>
+          </div>
+
+          {/* Navigation */}
+          <div>
+            <p className="mb-3 font-mono text-xs text-primary">// pages</p>
+            <nav aria-label="Footer navigation">
+              <ul className="space-y-2">
+                {footerLinks.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      to={link.to}
+                      className="font-mono text-sm text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <p className="mb-3 font-mono text-xs text-primary">// connect</p>
+            <div className="flex gap-3">
+              <a
+                href={siteConfig.social.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-border p-2 text-muted-foreground transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
+                aria-label="GitHub"
+              >
+                <Github className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <a
+                href={siteConfig.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-border p-2 text-muted-foreground transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <a
+                href={siteConfig.social.telegram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-border p-2 text-muted-foreground transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
+                aria-label="Telegram"
+              >
+                <Send className="h-4 w-4" aria-hidden="true" />
+              </a>
+            </div>
+            <p className="mt-3 font-mono text-xs text-muted-foreground">{siteConfig.email}</p>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-border pt-6 md:flex-row">
+          <div className="flex items-center gap-1.5 text-muted-foreground">
             <span className="font-mono text-sm">Built with</span>
-            <Heart className="h-4 w-4 fill-primary text-primary" aria-hidden="true" />
+            <Heart className="h-3.5 w-3.5 fill-primary text-primary" aria-hidden="true" />
             <span className="font-mono text-sm">by {siteConfig.name}</span>
           </div>
-
-          {/* Center - Social links */}
           <div className="flex items-center gap-4">
-            <a
-              href={siteConfig.social.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg p-2 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
-              aria-label="GitHub"
-            >
-              <Github className="h-5 w-5" aria-hidden="true" />
-            </a>
-            <a
-              href={siteConfig.social.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg p-2 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="h-5 w-5" aria-hidden="true" />
-            </a>
-            <a
-              href={siteConfig.social.telegram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg p-2 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
-              aria-label="Telegram"
-            >
-              <Send className="h-5 w-5" aria-hidden="true" />
-            </a>
-          </div>
-
-          {/* Right */}
-          <div className="font-mono text-sm text-muted-foreground">
-            © {new Date().getFullYear()} azizkhan.dev
+            <span className="font-mono text-xs text-muted-foreground/60">
+              React · TypeScript · Tailwind CSS
+            </span>
+            <span className="font-mono text-sm text-muted-foreground">
+              © {new Date().getFullYear()} azizkhan.dev
+            </span>
           </div>
         </div>
       </div>

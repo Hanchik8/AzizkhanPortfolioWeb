@@ -1,8 +1,9 @@
-import { Code2, Layers, Database, Lightbulb } from "lucide-react";
+import { type ReactNode } from "react";
+import { Code2, Layers, Database, Lightbulb, Monitor } from "lucide-react";
 
 interface SkillCategory {
   title: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   skills: string[];
   size: "large" | "medium" | "small";
 }
@@ -11,19 +12,31 @@ const skillCategories: SkillCategory[] = [
   {
     title: "Languages",
     icon: <Code2 className="h-5 w-5" />,
-    skills: ["Java 17/21", "Core Java", "Stream API", "Multithreading", "JavaScript"],
+    skills: ["Java 17/21", "Core Java", "Stream API", "Multithreading", "TypeScript", "JavaScript"],
     size: "large",
   },
   {
-    title: "Frameworks",
+    title: "Backend Frameworks",
     icon: <Layers className="h-5 w-5" />,
-    skills: ["Spring Boot 3.3", "Spring Security", "Spring Data JPA", "Spring Cloud", "Spring MVC"],
+    skills: [
+      "Spring Boot 3.3",
+      "Spring Security",
+      "Spring Data JPA",
+      "Spring Cloud",
+      "Spring MVC",
+    ],
     size: "large",
+  },
+  {
+    title: "Frontend",
+    icon: <Monitor className="h-5 w-5" />,
+    skills: ["React 18", "TypeScript", "Tailwind CSS", "React Router", "React Hook Form", "Vite"],
+    size: "medium",
   },
   {
     title: "Infrastructure",
     icon: <Database className="h-5 w-5" />,
-    skills: ["Docker", "PostgreSQL", "Apache Kafka", "Redis", "Maven"],
+    skills: ["Docker", "PostgreSQL", "Apache Kafka", "Redis", "Maven", "Docker Compose"],
     size: "medium",
   },
   {
@@ -85,13 +98,13 @@ const Skills = () => {
   );
 };
 
-const SkillCard = ({ category, index }: { category: SkillCategory; index: number }) => {
-  const sizeClasses = {
-    large: "lg:col-span-2 lg:row-span-2",
-    medium: "lg:col-span-2",
-    small: "",
-  };
+const sizeClasses: Record<SkillCategory["size"], string> = {
+  large: "lg:col-span-2 lg:row-span-2",
+  medium: "lg:col-span-2",
+  small: "",
+};
 
+const SkillCard = ({ category, index }: { category: SkillCategory; index: number }) => {
   return (
     <div
       className={`card-hover animate-fade-in rounded-lg border border-border bg-card p-6 opacity-0 ${sizeClasses[category.size]}`}

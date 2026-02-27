@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Github, Star } from "lucide-react";
 import { projects, type Project } from "@/content/projects";
 
 interface ProjectsProps {
@@ -39,9 +39,10 @@ const Projects = ({
           {showViewAllLink && (
             <Link
               to="/projects"
-              className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 font-mono text-sm text-primary transition-colors hover:border-primary/60 hover:bg-primary/10"
+              className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 font-mono text-sm text-primary transition-colors hover:border-primary/60 hover:bg-primary/10"
             >
               View all projects
+              <span aria-hidden="true">{">"}</span>
             </Link>
           )}
         </div>
@@ -61,14 +62,22 @@ export const ProjectCard = ({ project, index }: { project: Project; index: numbe
 
   return (
     <div
-      className="card-hover group relative animate-fade-in rounded-lg border border-border bg-card p-6 opacity-0"
+      className="card-hover group relative flex flex-col animate-fade-in rounded-lg border border-border bg-card p-6 opacity-0"
       style={{ animationDelay: `${index * 100}ms` }}
     >
+      {/* Featured badge */}
+      {project.featured && (
+        <div className="absolute right-4 top-4 flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5">
+          <Star className="h-3 w-3 fill-primary text-primary" aria-hidden="true" />
+          <span className="font-mono text-[10px] text-primary">featured</span>
+        </div>
+      )}
+
       <div className="mb-4 flex items-start justify-between">
         <div className="rounded-lg bg-primary/10 p-3 text-primary">
           <Icon className="h-6 w-6" aria-hidden="true" />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 pr-20">
           {project.github && (
             <a
               href={project.github}
@@ -127,7 +136,7 @@ export const ProjectCard = ({ project, index }: { project: Project; index: numbe
 
         <Link
           to={`/projects/${project.id}`}
-          className="inline-flex items-center gap-2 font-mono text-sm text-primary transition-colors hover:text-primary/80"
+          className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 font-mono text-sm text-primary transition-all hover:border-primary/50 hover:bg-primary/5"
           aria-label={`Open ${project.title} case study`}
         >
           Open case study

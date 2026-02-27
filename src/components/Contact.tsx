@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { siteConfig } from "@/content/siteConfig";
 
 const contactSchema = z.object({
@@ -231,13 +232,13 @@ const Contact = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="message">Message</Label>
-                <textarea
+                <Textarea
                   id="message"
                   placeholder="Your message..."
                   rows={4}
                   {...register("message")}
                   disabled={!isContactFormConfigured || status === "submitting"}
-                  className={`flex min-h-[120px] w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.message ? "border-destructive" : ""}`}
+                  className={errors.message ? "border-destructive" : ""}
                 />
                 {errors.message && (
                   <p className="text-xs text-destructive">{errors.message.message}</p>

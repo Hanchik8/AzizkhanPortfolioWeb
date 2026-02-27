@@ -1,4 +1,4 @@
-import { GraduationCap, Globe, MapPin, Calendar, Heart, Coffee } from "lucide-react";
+import { GraduationCap, MapPin, Calendar, Heart, Coffee } from "lucide-react";
 import { siteConfig } from "@/content/siteConfig";
 
 const About = () => {

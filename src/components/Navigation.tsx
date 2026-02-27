@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Terminal } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
@@ -18,6 +18,9 @@ const navItemsConfig: NavItem[] = [
   { type: "route", label: "Now", to: "/now", group: "secondary" },
 ];
 
+const primaryNavItems = navItemsConfig.filter((item) => item.group !== "secondary");
+const secondaryNavItems = navItemsConfig.filter((item) => item.group === "secondary");
+
 const desktopItemClass =
   "group flex items-center font-mono text-sm text-muted-foreground transition-colors hover:text-foreground";
 const desktopSecondaryItemClass =
@@ -29,16 +32,6 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-
-  const navItems = useMemo(() => navItemsConfig, []);
-  const primaryNavItems = useMemo(
-    () => navItems.filter((item) => item.group !== "secondary"),
-    [navItems],
-  );
-  const secondaryNavItems = useMemo(
-    () => navItems.filter((item) => item.group === "secondary"),
-    [navItems],
-  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -177,7 +170,11 @@ const Navigation = () => {
         </div>
 
         {isOpen && (
-          <div id="mobile-menu" className="animate-fade-in border-t border-border py-4 md:hidden" role="menu">
+          <div
+            id="mobile-menu"
+            className="animate-fade-in border-t border-border py-4 md:hidden"
+            role="menu"
+          >
             <div className="space-y-4">
               <div>
                 <p className="mb-2 font-mono text-xs text-primary/80">// navigation</p>

@@ -23,11 +23,19 @@ const Services = () => {
             return (
               <div
                 key={service.id}
-                className="card-hover group relative animate-fade-in rounded-lg border border-border bg-card p-6 opacity-0"
+                className="card-hover group relative animate-fade-in overflow-hidden rounded-lg border border-border bg-card p-6 opacity-0"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
+                {/* Top accent line on hover */}
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+                {/* Number badge */}
+                <span className="mb-4 block font-mono text-xs text-primary/50">
+                  {String(index + 1).padStart(2, "0")}.
+                </span>
+
                 {/* Icon */}
-                <div className="mb-4 w-fit rounded-lg bg-primary/10 p-3 text-primary">
+                <div className="mb-4 w-fit rounded-lg bg-primary/10 p-3 text-primary transition-colors group-hover:bg-primary/20">
                   <Icon className="h-6 w-6" />
                 </div>
 

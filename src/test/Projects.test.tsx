@@ -6,7 +6,7 @@ import Projects from "../components/Projects";
 describe("Projects", () => {
   const renderProjects = () =>
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Projects />
       </MemoryRouter>,
     );

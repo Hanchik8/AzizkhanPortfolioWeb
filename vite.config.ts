@@ -4,7 +4,7 @@ import path from "path";
 
 export default defineConfig({
   server: {
-    host: "::",
+    host: "localhost",
     port: 8080,
   },
   plugins: [react()],
@@ -14,6 +14,6 @@ export default defineConfig({
     },
   },
   build: {
-    sourcemap: true,
+    sourcemap: "hidden",
   },
 });

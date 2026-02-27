@@ -11,7 +11,10 @@ vi.mock("../components/ThemeToggle", () => ({
 describe("Navigation", () => {
   const renderNavigation = (route = "/") =>
     render(
-      <MemoryRouter initialEntries={[route]}>
+      <MemoryRouter
+        initialEntries={[route]}
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <Navigation />
       </MemoryRouter>,
     );
