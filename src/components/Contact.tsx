@@ -19,7 +19,9 @@ const Contact = () => {
   const [status, setStatus] = useState<FormStatus>("idle");
   const web3FormsKey = (import.meta.env.VITE_WEB3FORMS_KEY ?? "").trim();
   const isContactFormConfigured =
-    web3FormsKey.length > 0 && web3FormsKey !== "YOUR_ACCESS_KEY_HERE";
+    web3FormsKey.length > 0 &&
+    web3FormsKey !== "YOUR_ACCESS_KEY_HERE" &&
+    web3FormsKey !== "your_web3forms_access_key_here";
 
   const text = {
     sectionTitle: language === "ru" ? "Связаться со мной" : "Get In Touch",
@@ -100,20 +102,17 @@ const Contact = () => {
     setStatus("submitting");
 
     try {
+      const formData = new FormData();
+      formData.append("access_key", web3FormsKey);
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("subject", data.subject);
+      formData.append("message", data.message);
+      formData.append("from_name", "Portfolio Contact Form");
+
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: web3FormsKey,
-          name: data.name,
-          email: data.email,
-          subject: data.subject,
-          message: data.message,
-          from_name: "Portfolio Contact Form",
-        }),
+        body: formData,
       });
 
       const result = await response.json();
