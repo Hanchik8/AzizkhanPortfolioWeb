@@ -1,20 +1,30 @@
 import { Github, Linkedin, Send, Heart, Terminal } from "lucide-react";
 import { Link } from "react-router-dom";
-import { siteConfig } from "@/content/siteConfig";
-
-const footerLinks = [
-  { label: "Projects", to: "/projects" },
-  { label: "About", to: "/about" },
-  { label: "Notes", to: "/notes" },
-  { label: "Now", to: "/now" },
-];
+import { getSiteConfig } from "@/content/siteConfig";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const Footer = () => {
+  const { language } = useLanguage();
+  const siteConfig = getSiteConfig(language);
+  const footerLinks =
+    language === "ru"
+      ? [
+          { label: "Проекты", to: "/projects" },
+          { label: "Обо мне", to: "/about" },
+          { label: "Заметки", to: "/notes" },
+          { label: "Сейчас", to: "/now" },
+        ]
+      : [
+          { label: "Projects", to: "/projects" },
+          { label: "About", to: "/about" },
+          { label: "Notes", to: "/notes" },
+          { label: "Now", to: "/now" },
+        ];
+
   return (
     <footer className="border-t border-border">
       <div className="container py-10">
         <div className="mb-8 grid gap-8 md:grid-cols-3">
-          {/* Brand */}
           <div>
             <Link to="/" className="mb-3 flex items-center gap-2 font-mono text-base font-semibold">
               <Terminal className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -22,15 +32,17 @@ const Footer = () => {
               <span className="text-primary">.dev</span>
             </Link>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              {siteConfig.title} based in {siteConfig.location}. Building modern web apps with clean
-              code.
+              {language === "ru"
+                ? `${siteConfig.title} из ${siteConfig.location}. Разрабатываю Java/Spring backend-системы с чистой и поддерживаемой архитектурой.`
+                : `${siteConfig.title} based in ${siteConfig.location}. Building Java/Spring backend systems with clean, maintainable code.`}
             </p>
           </div>
 
-          {/* Navigation */}
           <div>
-            <p className="mb-3 font-mono text-xs text-primary">// pages</p>
-            <nav aria-label="Footer navigation">
+            <p className="mb-3 font-mono text-xs text-primary">
+              {language === "ru" ? "// страницы" : "// pages"}
+            </p>
+            <nav aria-label={language === "ru" ? "Навигация в футере" : "Footer navigation"}>
               <ul className="space-y-2">
                 {footerLinks.map((link) => (
                   <li key={link.label}>
@@ -46,9 +58,10 @@ const Footer = () => {
             </nav>
           </div>
 
-          {/* Contact */}
           <div>
-            <p className="mb-3 font-mono text-xs text-primary">// connect</p>
+            <p className="mb-3 font-mono text-xs text-primary">
+              {language === "ru" ? "// контакты" : "// connect"}
+            </p>
             <div className="flex gap-3">
               <a
                 href={siteConfig.social.github}
@@ -82,19 +95,20 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-3 border-t border-border pt-6 md:flex-row">
           <div className="flex items-center gap-1.5 text-muted-foreground">
-            <span className="font-mono text-sm">Built with</span>
+            <span className="font-mono text-sm">{language === "ru" ? "Сделано" : "Built with"}</span>
             <Heart className="h-3.5 w-3.5 fill-primary text-primary" aria-hidden="true" />
-            <span className="font-mono text-sm">by {siteConfig.name}</span>
+            <span className="font-mono text-sm">
+              {language === "ru" ? `автор: ${siteConfig.name}` : `by ${siteConfig.name}`}
+            </span>
           </div>
           <div className="flex items-center gap-4">
             <span className="font-mono text-xs text-muted-foreground/60">
-              React · TypeScript · Tailwind CSS
+              Java | Spring Boot | PostgreSQL | Kafka
             </span>
             <span className="font-mono text-sm text-muted-foreground">
-              © {new Date().getFullYear()} azizkhan.dev
+              (c) {new Date().getFullYear()} azizkhan.dev
             </span>
           </div>
         </div>

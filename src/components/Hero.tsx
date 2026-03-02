@@ -1,10 +1,13 @@
 import { Github, Linkedin, Send, MapPin, ChevronDown } from "lucide-react";
-import { siteConfig } from "@/content/siteConfig";
-
-const [firstName, ...rest] = siteConfig.name.split(" ");
-const lastName = rest.join(" ");
+import { getSiteConfig } from "@/content/siteConfig";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const Hero = () => {
+  const { language } = useLanguage();
+  const siteConfig = getSiteConfig(language);
+  const [firstName, ...rest] = siteConfig.name.split(" ");
+  const lastName = rest.join(" ");
+
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
       {/* Grid background */}
@@ -25,7 +28,9 @@ const Hero = () => {
               <span className="status-pulse absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
             </span>
-            <span className="font-mono text-sm text-primary">Status: {siteConfig.status}</span>
+            <span className="font-mono text-sm text-primary">
+              {language === "ru" ? "Статус:" : "Status:"} {siteConfig.status}
+            </span>
           </div>
 
           {/* Name */}
@@ -57,7 +62,7 @@ const Hero = () => {
               href="/#contact"
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-mono text-sm font-semibold text-primary-foreground transition-all duration-300 hover:brightness-110 hover:shadow-lg hover:shadow-primary/25"
             >
-              Get in touch
+              {language === "ru" ? "Связаться" : "Get in touch"}
               <span aria-hidden="true">{">"}</span>
             </a>
             <a
@@ -65,7 +70,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-3 transition-all duration-300 hover:border-primary/50 hover:bg-primary/5"
-              aria-label="Visit GitHub profile"
+              aria-label={language === "ru" ? "Открыть профиль GitHub" : "Visit GitHub profile"}
             >
               <Github
                 className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary"
@@ -78,7 +83,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-3 transition-all duration-300 hover:border-primary/50 hover:bg-primary/5"
-              aria-label="Visit LinkedIn profile"
+              aria-label={language === "ru" ? "Открыть профиль LinkedIn" : "Visit LinkedIn profile"}
             >
               <Linkedin
                 className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary"
@@ -91,7 +96,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-2 rounded-lg border border-primary bg-primary/10 px-5 py-3 transition-all duration-300 hover:bg-primary/20"
-              aria-label="Contact via Telegram"
+              aria-label={language === "ru" ? "Написать в Telegram" : "Contact via Telegram"}
             >
               <Send className="h-5 w-5 text-primary" aria-hidden="true" />
               <span className="font-mono text-sm text-primary">Telegram</span>
@@ -107,9 +112,11 @@ const Hero = () => {
       <a
         href="/#services"
         className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-muted-foreground/60 transition-colors hover:text-primary"
-        aria-label="Scroll to next section"
+        aria-label={language === "ru" ? "Прокрутить к следующей секции" : "Scroll to next section"}
       >
-        <span className="font-mono text-[10px] uppercase tracking-widest">scroll</span>
+        <span className="font-mono text-[10px] uppercase tracking-widest">
+          {language === "ru" ? "вниз" : "scroll"}
+        </span>
         <ChevronDown className="h-4 w-4 animate-bounce" aria-hidden="true" />
       </a>
     </section>

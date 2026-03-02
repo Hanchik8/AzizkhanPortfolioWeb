@@ -1,6 +1,7 @@
 import { Briefcase, Compass, Gauge, Goal, Layers3, Rocket } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
 import { nowContent } from "@/content/now";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const statusStyles = {
   active: "border border-primary/30 bg-primary/10 text-primary",
@@ -8,6 +9,87 @@ const statusStyles = {
 } as const;
 
 const NowPage = () => {
+  const { language } = useLanguage();
+
+  const localized =
+    language === "ru"
+      ? {
+          updatedLabel: "Обновлено",
+          pageTitle: "Сейчас / Обучение",
+          headline: "Сфокусирован на backend-развитии и системном дизайне.",
+          summary:
+            "Сейчас усиливаю backend-навыки (Spring Boot, безопасность, распределенные системы), а frontend использую как поддерживающий слой для портфолио и демо.",
+          currentFocusTitle: "Текущий фокус",
+          learningQueueTitle: "Очередь обучения",
+          buildingNowTitle: "Что делаю сейчас",
+          internshipGoalsTitle: "Цели стажировки",
+          notDoingNowTitle: "Чего избегаю",
+          whyTitle: "Зачем нужна эта страница",
+          whyText:
+            "Эта страница показывает, что я изучаю и строю прямо сейчас, а не только уже завершенные задачи. Так портфолио остается живым.",
+          statusActive: "активно",
+          statusNext: "следом",
+          currentFocus: [
+            "Углубляюсь в Spring Security и более чистую архитектуру авторизации",
+            "Изучаю Kafka-паттерны для event-driven потоков и обработки сбоев",
+            "Прокачиваю системный дизайн: trade-off'ы, узкие места, консистентность",
+            "Улучшаю технические кейсы и заметки по проектам",
+          ],
+          learningQueue: [
+            {
+              title: "Базовая observability для микросервисов",
+              why: "Хочу, чтобы демо показывали не только фичи, но и операционное мышление (трейсы, метрики, логи).",
+              status: "next" as const,
+            },
+            {
+              title: "Стратегия тестирования распределенных систем",
+              why: "Нужна уверенность не только в unit-тестах: integration, contract и e2e проверки.",
+              status: "active" as const,
+            },
+            {
+              title: "Профилирование производительности Java-сервисов",
+              why: "Хочу объяснять медленные эндпоинты на основе данных, а не предположений.",
+              status: "next" as const,
+            },
+          ],
+          buildingNow: [
+            "Развиваю это портфолио в полноценный многостраничный сайт с кейсами проектов",
+            "Улучшаю документацию проектов для понятной передачи архитектурных решений",
+            "Пишу короткие технические заметки на основе реальных уроков из проектов",
+          ],
+          internshipGoals: [
+            "Попасть в команду, где серьезно относятся к code review и инженерным стандартам",
+            "Работать над backend API, моделями данных и интеграционными сценариями",
+            "Учиться production-подходам к дебагу и деплою",
+          ],
+          notDoingNow: [
+            "Не распыляюсь на слишком много фреймворков одновременно",
+            "Не переусложняю pet-проекты до релиза рабочей версии",
+            "Не откладываю публикацию из-за желания писать только длинные статьи",
+          ],
+        }
+      : {
+          updatedLabel: "Updated",
+          pageTitle: "Now / Learning",
+          headline: nowContent.headline,
+          summary: nowContent.summary,
+          currentFocusTitle: "Current Focus",
+          learningQueueTitle: "Learning Queue",
+          buildingNowTitle: "Building Right Now",
+          internshipGoalsTitle: "Internship Goals",
+          notDoingNowTitle: "What I Avoid",
+          whyTitle: "Why This Page Exists",
+          whyText:
+            "This page helps visitors see what I am actively learning and building right now, not only what I already finished. It keeps the portfolio feeling alive.",
+          statusActive: "active",
+          statusNext: "next",
+          currentFocus: nowContent.currentFocus,
+          learningQueue: nowContent.learningQueue,
+          buildingNow: nowContent.buildingNow,
+          internshipGoals: nowContent.internshipGoals,
+          notDoingNow: nowContent.notDoingNow,
+        };
+
   return (
     <SiteLayout>
       <>
@@ -18,13 +100,13 @@ const NowPage = () => {
             <div className="mx-auto max-w-5xl rounded-2xl border border-border bg-card p-8">
               <p className="mb-4 font-mono text-sm text-primary">/now</p>
               <div className="mb-4 flex flex-wrap items-center gap-3">
-                <h1 className="font-mono text-4xl font-bold md:text-5xl">Now / Learning</h1>
+                <h1 className="font-mono text-4xl font-bold md:text-5xl">{localized.pageTitle}</h1>
                 <span className="rounded-full border border-border bg-background px-3 py-1 font-mono text-xs text-muted-foreground">
-                  Updated: {nowContent.updatedAt}
+                  {localized.updatedLabel}: {nowContent.updatedAt}
                 </span>
               </div>
-              <p className="mb-4 text-lg text-foreground">{nowContent.headline}</p>
-              <p className="max-w-3xl leading-relaxed text-muted-foreground">{nowContent.summary}</p>
+              <p className="mb-4 text-lg text-foreground">{localized.headline}</p>
+              <p className="max-w-3xl leading-relaxed text-muted-foreground">{localized.summary}</p>
             </div>
           </div>
         </section>
@@ -35,9 +117,9 @@ const NowPage = () => {
               <div className="space-y-6">
                 <Panel
                   number="01."
-                  title="Current Focus"
+                  title={localized.currentFocusTitle}
                   icon={Compass}
-                  items={nowContent.currentFocus}
+                  items={localized.currentFocus}
                 />
 
                 <section className="rounded-xl border border-border bg-card p-6">
@@ -46,11 +128,11 @@ const NowPage = () => {
                     <div className="rounded-lg bg-primary/10 p-2 text-primary">
                       <Layers3 className="h-5 w-5" aria-hidden="true" />
                     </div>
-                    <h2 className="font-mono text-xl font-semibold">Learning Queue</h2>
+                    <h2 className="font-mono text-xl font-semibold">{localized.learningQueueTitle}</h2>
                   </div>
 
                   <div className="space-y-4">
-                    {nowContent.learningQueue.map((item) => (
+                    {localized.learningQueue.map((item) => (
                       <div key={item.title} className="rounded-lg border border-border/80 bg-background/40 p-4">
                         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                           <h3 className="font-mono text-sm font-semibold text-foreground">
@@ -59,7 +141,7 @@ const NowPage = () => {
                           <span
                             className={`rounded-full px-2.5 py-1 font-mono text-xs ${statusStyles[item.status]}`}
                           >
-                            {item.status}
+                            {item.status === "active" ? localized.statusActive : localized.statusNext}
                           </span>
                         </div>
                         <p className="text-sm leading-relaxed text-muted-foreground">{item.why}</p>
@@ -70,25 +152,25 @@ const NowPage = () => {
 
                 <Panel
                   number="03."
-                  title="Building Right Now"
+                  title={localized.buildingNowTitle}
                   icon={Rocket}
-                  items={nowContent.buildingNow}
+                  items={localized.buildingNow}
                 />
               </div>
 
               <aside className="space-y-6">
                 <Panel
                   number="04."
-                  title="Internship Goals"
+                  title={localized.internshipGoalsTitle}
                   icon={Briefcase}
-                  items={nowContent.internshipGoals}
+                  items={localized.internshipGoals}
                 />
 
                 <Panel
                   number="05."
-                  title="What I Avoid"
+                  title={localized.notDoingNowTitle}
                   icon={Gauge}
-                  items={nowContent.notDoingNow}
+                  items={localized.notDoingNow}
                 />
 
                 <section className="rounded-xl border border-border bg-card/70 p-6">
@@ -96,12 +178,9 @@ const NowPage = () => {
                     <div className="rounded-lg bg-primary/10 p-2 text-primary">
                       <Goal className="h-5 w-5" aria-hidden="true" />
                     </div>
-                    <h2 className="font-mono text-lg font-semibold">Why This Page Exists</h2>
+                    <h2 className="font-mono text-lg font-semibold">{localized.whyTitle}</h2>
                   </div>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    This page helps visitors see what I am actively learning and building right now,
-                    not only what I already finished. It keeps the portfolio feeling alive.
-                  </p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{localized.whyText}</p>
                 </section>
               </aside>
             </div>

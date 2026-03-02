@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ExternalLink, Github, Star } from "lucide-react";
 import { projects, type Project } from "@/content/projects";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 interface ProjectsProps {
   sectionId?: string;
@@ -19,6 +20,8 @@ const Projects = ({
   items = projects,
   showViewAllLink = false,
 }: ProjectsProps) => {
+  const { language } = useLanguage();
+
   return (
     <section id={sectionId} className="relative py-24">
       <div className="container">
@@ -41,7 +44,7 @@ const Projects = ({
               to="/projects"
               className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 font-mono text-sm text-primary transition-colors hover:border-primary/60 hover:bg-primary/10"
             >
-              View all projects
+              {language === "ru" ? "Смотреть все проекты" : "View all projects"}
               <span aria-hidden="true">{">"}</span>
             </Link>
           )}
@@ -59,6 +62,7 @@ const Projects = ({
 
 export const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
   const Icon = project.icon;
+  const { language } = useLanguage();
 
   return (
     <div
@@ -69,7 +73,9 @@ export const ProjectCard = ({ project, index }: { project: Project; index: numbe
       {project.featured && (
         <div className="absolute right-4 top-4 flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5">
           <Star className="h-3 w-3 fill-primary text-primary" aria-hidden="true" />
-          <span className="font-mono text-[10px] text-primary">featured</span>
+          <span className="font-mono text-[10px] text-primary">
+            {language === "ru" ? "избранный" : "featured"}
+          </span>
         </div>
       )}
 
@@ -84,7 +90,11 @@ export const ProjectCard = ({ project, index }: { project: Project; index: numbe
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-lg p-2 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
-              aria-label={`View ${project.title} on GitHub`}
+              aria-label={
+                language === "ru"
+                  ? `Открыть ${project.title} на GitHub`
+                  : `View ${project.title} on GitHub`
+              }
             >
               <Github className="h-5 w-5" aria-hidden="true" />
             </a>
@@ -95,7 +105,9 @@ export const ProjectCard = ({ project, index }: { project: Project; index: numbe
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-lg p-2 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
-              aria-label={`View ${project.title} demo`}
+              aria-label={
+                language === "ru" ? `Открыть демо ${project.title}` : `View ${project.title} demo`
+              }
             >
               <ExternalLink className="h-5 w-5" aria-hidden="true" />
             </a>
@@ -137,9 +149,13 @@ export const ProjectCard = ({ project, index }: { project: Project; index: numbe
         <Link
           to={`/projects/${project.id}`}
           className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 font-mono text-sm text-primary transition-all hover:border-primary/50 hover:bg-primary/5"
-          aria-label={`Open ${project.title} case study`}
+          aria-label={
+            language === "ru"
+              ? `Открыть кейс по проекту ${project.title}`
+              : `Open ${project.title} case study`
+          }
         >
-          Open case study
+          {language === "ru" ? "Открыть кейс" : "Open case study"}
           <span aria-hidden="true">{">"}</span>
         </Link>
       </div>

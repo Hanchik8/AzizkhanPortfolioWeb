@@ -2,24 +2,35 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Terminal } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import LanguageToggle from "./LanguageToggle";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import type { Language } from "@/i18n/types";
 
 type NavItem =
   | { type: "route"; label: string; to: string; end?: boolean; group?: "primary" | "secondary" }
   | { type: "anchor"; label: string; href: string; group?: "primary" | "secondary" };
 
-const navItemsConfig: NavItem[] = [
-  { type: "anchor", label: "Services", href: "/#services" },
-  { type: "route", label: "Projects", to: "/projects" },
-  { type: "anchor", label: "Skills", href: "/#skills" },
-  { type: "route", label: "About", to: "/about" },
-  { type: "anchor", label: "Contact", href: "/#contact" },
-  { type: "route", label: "Notes", to: "/notes", group: "secondary" },
-  { type: "route", label: "Now", to: "/now", group: "secondary" },
-];
-
-const primaryNavItems = navItemsConfig.filter((item) => item.group !== "secondary");
-const secondaryNavItems = navItemsConfig.filter((item) => item.group === "secondary");
+const getNavItemsConfig = (language: Language): NavItem[] =>
+  language === "ru"
+    ? [
+        { type: "anchor", label: "Услуги", href: "/#services" },
+        { type: "route", label: "Проекты", to: "/projects" },
+        { type: "anchor", label: "Навыки", href: "/#skills" },
+        { type: "route", label: "Обо мне", to: "/about" },
+        { type: "anchor", label: "Контакты", href: "/#contact" },
+        { type: "route", label: "Заметки", to: "/notes", group: "secondary" },
+        { type: "route", label: "Сейчас", to: "/now", group: "secondary" },
+      ]
+    : [
+        { type: "anchor", label: "Services", href: "/#services" },
+        { type: "route", label: "Projects", to: "/projects" },
+        { type: "anchor", label: "Skills", href: "/#skills" },
+        { type: "route", label: "About", to: "/about" },
+        { type: "anchor", label: "Contact", href: "/#contact" },
+        { type: "route", label: "Notes", to: "/notes", group: "secondary" },
+        { type: "route", label: "Now", to: "/now", group: "secondary" },
+      ];
 
 const desktopItemClass =
   "group flex items-center font-mono text-sm text-muted-foreground transition-colors hover:text-foreground";
@@ -30,17 +41,11 @@ const mobileItemClass =
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const { language } = useLanguage();
+  const navItemsConfig = getNavItemsConfig(language);
+  const primaryNavItems = navItemsConfig.filter((item) => item.group !== "secondary");
+  const secondaryNavItems = navItemsConfig.filter((item) => item.group === "secondary");
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -123,11 +128,9 @@ const Navigation = () => {
 
   return (
     <nav
-      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
-        scrolled ? "border-b border-border bg-background/80 backdrop-blur-lg" : "bg-transparent"
-      }`}
+      className="fixed left-0 right-0 top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg"
       role="navigation"
-      aria-label="Main navigation"
+      aria-label={language === "ru" ? "Основная навигация" : "Main navigation"}
     >
       <div className="container">
         <div className="flex h-16 items-center justify-between">
@@ -151,16 +154,26 @@ const Navigation = () => {
               </>
             )}
 
+            <LanguageToggle />
             <div className="h-5 w-px bg-border/80" aria-hidden="true" />
             <ThemeToggle />
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
+            <LanguageToggle />
             <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="rounded-lg p-2 text-foreground transition-colors hover:bg-secondary"
-              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-label={
+                isOpen
+                  ? language === "ru"
+                    ? "Закрыть меню"
+                    : "Close menu"
+                  : language === "ru"
+                    ? "Открыть меню"
+                    : "Open menu"
+              }
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
             >
@@ -177,7 +190,9 @@ const Navigation = () => {
           >
             <div className="space-y-4">
               <div>
-                <p className="mb-2 font-mono text-xs text-primary/80">// navigation</p>
+                <p className="mb-2 font-mono text-xs text-primary/80">
+                  {language === "ru" ? "// навигация" : "// navigation"}
+                </p>
                 <div className="flex flex-col gap-2">
                   {primaryNavItems.map((item) => renderMobileItem(item))}
                 </div>
@@ -185,7 +200,9 @@ const Navigation = () => {
 
               {secondaryNavItems.length > 0 && (
                 <div className="border-t border-border pt-4">
-                  <p className="mb-2 font-mono text-xs text-primary/80">// pages</p>
+                  <p className="mb-2 font-mono text-xs text-primary/80">
+                    {language === "ru" ? "// страницы" : "// pages"}
+                  </p>
                   <div className="flex flex-col gap-2">
                     {secondaryNavItems.map((item) => renderMobileItem(item))}
                   </div>

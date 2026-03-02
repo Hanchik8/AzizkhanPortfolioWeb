@@ -1,8 +1,10 @@
 import Projects from "@/components/Projects";
 import SiteLayout from "@/components/SiteLayout";
 import { getAllProjects, getFeaturedProjects } from "@/content/projects";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const ProjectsPage = () => {
+  const { language } = useLanguage();
   const allProjects = getAllProjects();
   const featuredCount = getFeaturedProjects().length;
 
@@ -16,23 +18,32 @@ const ProjectsPage = () => {
           <div className="container relative">
             <div className="mx-auto max-w-4xl rounded-2xl border border-border bg-card/60 p-8 backdrop-blur">
               <p className="mb-4 font-mono text-sm text-primary">/projects</p>
-              <h1 className="mb-4 font-mono text-4xl font-bold md:text-5xl">Project Archive</h1>
+              <h1 className="mb-4 font-mono text-4xl font-bold md:text-5xl">
+                {language === "ru" ? "Архив проектов" : "Project Archive"}
+              </h1>
               <p className="max-w-2xl leading-relaxed text-muted-foreground">
-                A deeper look at the systems and applications I have built. Each project includes
-                stack choices, technical highlights, and a dedicated case study page.
+                {language === "ru"
+                  ? "Более глубокий взгляд на системы и приложения, которые я разрабатывал. Для каждого проекта доступен стек, технические акценты и отдельная страница с кейсом."
+                  : "A deeper look at the systems and applications I have built. Each project includes stack choices, technical highlights, and a dedicated case study page."}
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <div className="rounded-lg border border-border bg-background/60 px-4 py-2">
-                  <span className="font-mono text-xs text-muted-foreground">Total Projects</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {language === "ru" ? "Всего проектов" : "Total Projects"}
+                  </span>
                   <p className="font-mono text-lg text-foreground">{allProjects.length}</p>
                 </div>
                 <div className="rounded-lg border border-border bg-background/60 px-4 py-2">
-                  <span className="font-mono text-xs text-muted-foreground">Featured</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {language === "ru" ? "Избранные" : "Featured"}
+                  </span>
                   <p className="font-mono text-lg text-primary">{featuredCount}</p>
                 </div>
                 <div className="rounded-lg border border-border bg-background/60 px-4 py-2">
-                  <span className="font-mono text-xs text-muted-foreground">Focus</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {language === "ru" ? "Фокус" : "Focus"}
+                  </span>
                   <p className="font-mono text-lg text-foreground">Java / Spring / Systems</p>
                 </div>
               </div>
@@ -43,8 +54,12 @@ const ProjectsPage = () => {
         <Projects
           sectionId="projects-archive"
           numberLabel="01."
-          title="All Projects"
-          description="Open any card to view the case study page with architecture notes, engineering decisions, and future improvements."
+          title={language === "ru" ? "Все проекты" : "All Projects"}
+          description={
+            language === "ru"
+              ? "Откройте любую карточку, чтобы посмотреть кейс с архитектурными заметками, инженерными решениями и идеями улучшений."
+              : "Open any card to view the case study page with architecture notes, engineering decisions, and future improvements."
+          }
           items={allProjects}
         />
       </>

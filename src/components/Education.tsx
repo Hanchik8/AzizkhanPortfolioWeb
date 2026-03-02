@@ -23,7 +23,7 @@ const Education = () => {
               </div>
               <div className="flex-1">
                 <h3 className="mb-2 font-mono text-xl font-semibold">
-                  International Ataturk-Alatoo University
+                  IAU
                 </h3>
                 <p className="mb-2 font-mono text-sm text-primary">Computer Engineering</p>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">

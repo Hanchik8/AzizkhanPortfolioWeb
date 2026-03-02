@@ -3,8 +3,10 @@ import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
 import NotFound from "@/pages/NotFound";
 import { getProjectById } from "@/content/projects";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const ProjectDetailsPage = () => {
+  const { language } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const project = id ? getProjectById(id) : undefined;
 
@@ -26,7 +28,7 @@ const ProjectDetailsPage = () => {
               className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-primary"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              Back to projects
+              {language === "ru" ? "Назад к проектам" : "Back to projects"}
             </Link>
           </div>
 
@@ -63,7 +65,7 @@ const ProjectDetailsPage = () => {
                     className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 font-mono text-sm transition-colors hover:border-primary/40 hover:text-primary"
                   >
                     <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                    Demo
+                    {language === "ru" ? "Демо" : "Demo"}
                   </a>
                 )}
               </div>
@@ -88,7 +90,9 @@ const ProjectDetailsPage = () => {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">01.</span>
-                  <h2 className="font-mono text-xl font-semibold">Problem</h2>
+                  <h2 className="font-mono text-xl font-semibold">
+                    {language === "ru" ? "Проблема" : "Problem"}
+                  </h2>
                 </div>
                 <p className="leading-relaxed text-muted-foreground">{project.caseStudy.problem}</p>
               </section>
@@ -96,7 +100,9 @@ const ProjectDetailsPage = () => {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">02.</span>
-                  <h2 className="font-mono text-xl font-semibold">Solution</h2>
+                  <h2 className="font-mono text-xl font-semibold">
+                    {language === "ru" ? "Решение" : "Solution"}
+                  </h2>
                 </div>
                 <p className="leading-relaxed text-muted-foreground">
                   {project.caseStudy.solution}
@@ -106,7 +112,9 @@ const ProjectDetailsPage = () => {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">03.</span>
-                  <h2 className="font-mono text-xl font-semibold">Architecture Notes</h2>
+                  <h2 className="font-mono text-xl font-semibold">
+                    {language === "ru" ? "Архитектурные заметки" : "Architecture Notes"}
+                  </h2>
                 </div>
                 <ul className="space-y-2">
                   {project.caseStudy.architectureNotes.map((note) => (
@@ -121,7 +129,9 @@ const ProjectDetailsPage = () => {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">04.</span>
-                  <h2 className="font-mono text-xl font-semibold">Engineering Decisions</h2>
+                  <h2 className="font-mono text-xl font-semibold">
+                    {language === "ru" ? "Инженерные решения" : "Engineering Decisions"}
+                  </h2>
                 </div>
                 <ul className="space-y-2">
                   {project.caseStudy.engineeringDecisions.map((decision) => (
@@ -138,7 +148,9 @@ const ProjectDetailsPage = () => {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">05.</span>
-                  <h2 className="font-mono text-lg font-semibold">Highlights</h2>
+                  <h2 className="font-mono text-lg font-semibold">
+                    {language === "ru" ? "Ключевые моменты" : "Highlights"}
+                  </h2>
                 </div>
                 <ul className="space-y-2">
                   {project.highlights.map((highlight) => (
@@ -153,7 +165,9 @@ const ProjectDetailsPage = () => {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">06.</span>
-                  <h2 className="font-mono text-lg font-semibold">Next Steps</h2>
+                  <h2 className="font-mono text-lg font-semibold">
+                    {language === "ru" ? "Следующие шаги" : "Next Steps"}
+                  </h2>
                 </div>
                 <ul className="space-y-2">
                   {project.caseStudy.nextSteps.map((step) => (
@@ -166,23 +180,26 @@ const ProjectDetailsPage = () => {
               </section>
 
               <section className="rounded-xl border border-border bg-card/70 p-6">
-                <p className="mb-3 font-mono text-sm text-primary">// Want more details?</p>
+                <p className="mb-3 font-mono text-sm text-primary">
+                  {language === "ru" ? "// Нужны детали?" : "// Want more details?"}
+                </p>
                 <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-                  I can walk through architecture tradeoffs, service boundaries, and implementation
-                  decisions during an interview or call.
+                  {language === "ru"
+                    ? "На интервью или звонке могу подробно разобрать архитектурные trade-off'ы, границы сервисов и принятые решения."
+                    : "I can walk through architecture tradeoffs, service boundaries, and implementation decisions during an interview or call."}
                 </p>
                 <div className="flex flex-col gap-2">
                   <a
                     href="/#contact"
                     className="inline-flex items-center justify-center rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 font-mono text-sm text-primary transition-colors hover:bg-primary/10"
                   >
-                    Contact me
+                    {language === "ru" ? "Связаться" : "Contact me"}
                   </a>
                   <Link
                     to="/projects"
                     className="inline-flex items-center justify-center rounded-lg border border-border px-4 py-2 font-mono text-sm transition-colors hover:border-primary/30 hover:text-primary"
                   >
-                    Browse more projects
+                    {language === "ru" ? "Посмотреть другие проекты" : "Browse more projects"}
                   </Link>
                 </div>
               </section>

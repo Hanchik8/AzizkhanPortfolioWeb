@@ -2,11 +2,14 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays, Clock3, FileText, Tag } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
 import NotFound from "@/pages/NotFound";
-import { getNoteBySlug, notes, type NoteBlock } from "@/content/notes";
+import { getLocalizedNoteBySlug, getLocalizedNotes, type NoteBlock } from "@/content/notes";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const NoteDetailsPage = () => {
+  const { language } = useLanguage();
   const { slug } = useParams<{ slug: string }>();
-  const note = slug ? getNoteBySlug(slug) : undefined;
+  const notes = getLocalizedNotes(language);
+  const note = slug ? getLocalizedNoteBySlug(slug, language) : undefined;
 
   if (!note) {
     return <NotFound />;
@@ -30,7 +33,7 @@ const NoteDetailsPage = () => {
               className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-primary"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              Back to notes
+              {language === "ru" ? "Назад к заметкам" : "Back to notes"}
             </Link>
           </div>
 
@@ -44,7 +47,13 @@ const NoteDetailsPage = () => {
                     : "border border-border bg-secondary text-muted-foreground"
                 }`}
               >
-                {note.status}
+                {note.status === "published"
+                  ? language === "ru"
+                    ? "опубликовано"
+                    : "published"
+                  : language === "ru"
+                    ? "черновик"
+                    : "draft"}
               </span>
             </div>
 
@@ -64,7 +73,7 @@ const NoteDetailsPage = () => {
               <span className="text-primary">|</span>
               <span className="inline-flex items-center gap-1.5">
                 <FileText className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-                Technical note
+                {language === "ru" ? "Техническая заметка" : "Technical note"}
               </span>
             </div>
 
@@ -85,7 +94,9 @@ const NoteDetailsPage = () => {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">01.</span>
-                  <h2 className="font-mono text-xl font-semibold">Key Takeaways</h2>
+                  <h2 className="font-mono text-xl font-semibold">
+                    {language === "ru" ? "Ключевые выводы" : "Key Takeaways"}
+                  </h2>
                 </div>
                 <ul className="space-y-2">
                   {note.keyTakeaways.map((takeaway) => (
@@ -100,31 +111,38 @@ const NoteDetailsPage = () => {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">02.</span>
-                  <h2 className="font-mono text-xl font-semibold">Article Body</h2>
+                  <h2 className="font-mono text-xl font-semibold">
+                    {language === "ru" ? "Содержание" : "Article Body"}
+                  </h2>
                 </div>
 
                 {note.status === "draft" && (
                   <div className="mb-5 rounded-lg border border-primary/20 bg-primary/5 p-4">
-                    <p className="mb-1 font-mono text-xs text-primary">// draft note</p>
+                    <p className="mb-1 font-mono text-xs text-primary">
+                      {language === "ru" ? "// черновик" : "// draft note"}
+                    </p>
                     <p className="text-sm leading-relaxed text-muted-foreground">
-                      This note is still in progress. The current content is a working outline and
-                      will be expanded later.
+                      {language === "ru"
+                        ? "Эта заметка еще в работе. Сейчас опубликован рабочий черновик, позже материал будет расширен."
+                        : "This note is still in progress. The current content is a working outline and will be expanded later."}
                     </p>
                   </div>
                 )}
 
-                <NoteContentRenderer blocks={note.content} />
+                <NoteContentRenderer blocks={note.content} language={language} />
               </section>
 
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">03.</span>
-                  <h2 className="font-mono text-xl font-semibold">Why This Note Matters</h2>
+                  <h2 className="font-mono text-xl font-semibold">
+                    {language === "ru" ? "Почему это важно" : "Why This Note Matters"}
+                  </h2>
                 </div>
                 <p className="leading-relaxed text-muted-foreground">
-                  Short notes make the portfolio look active and engineering-focused. They also show
-                  how you think, not just what you built. Even compact notes like this are useful
-                  when recruiters or engineers want to assess your technical maturity quickly.
+                  {language === "ru"
+                    ? "Короткие заметки делают портфолио живым и инженерно ориентированным. Они показывают не только результат, но и ход мышления. Даже компактные материалы помогают быстрее оценить техническую зрелость."
+                    : "Short notes make the portfolio look active and engineering-focused. They also show how you think, not just what you built. Even compact notes like this are useful when recruiters or engineers want to assess your technical maturity quickly."}
                 </p>
               </section>
             </div>
@@ -135,19 +153,29 @@ const NoteDetailsPage = () => {
                   <div className="rounded-lg bg-primary/10 p-2 text-primary">
                     <Tag className="h-5 w-5" aria-hidden="true" />
                   </div>
-                  <h2 className="font-mono text-lg font-semibold">Metadata</h2>
+                  <h2 className="font-mono text-lg font-semibold">
+                    {language === "ru" ? "Метаданные" : "Metadata"}
+                  </h2>
                 </div>
                 <div className="space-y-3 text-sm text-muted-foreground">
                   <div className="flex items-center justify-between gap-3">
-                    <span>Status</span>
-                    <span className="font-mono text-foreground">{note.status}</span>
+                    <span>{language === "ru" ? "Статус" : "Status"}</span>
+                    <span className="font-mono text-foreground">
+                      {note.status === "published"
+                        ? language === "ru"
+                          ? "опубликовано"
+                          : "published"
+                        : language === "ru"
+                          ? "черновик"
+                          : "draft"}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <span>Published</span>
+                    <span>{language === "ru" ? "Публикация" : "Published"}</span>
                     <span className="font-mono text-foreground">{note.publishedAt}</span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <span>Read Time</span>
+                    <span>{language === "ru" ? "Время чтения" : "Read Time"}</span>
                     <span className="font-mono text-foreground">{note.readTime}</span>
                   </div>
                   <div className="flex items-start justify-between gap-3">
@@ -162,7 +190,9 @@ const NoteDetailsPage = () => {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="font-mono text-sm text-primary">04.</span>
-                  <h2 className="font-mono text-lg font-semibold">Related Notes</h2>
+                  <h2 className="font-mono text-lg font-semibold">
+                    {language === "ru" ? "Похожие заметки" : "Related Notes"}
+                  </h2>
                 </div>
 
                 {relatedNotes.length > 0 ? (
@@ -182,22 +212,27 @@ const NoteDetailsPage = () => {
                   </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    Add more notes with overlapping tags to populate related entries here.
+                    {language === "ru"
+                      ? "Добавьте больше заметок с пересекающимися тегами, чтобы здесь появились связанные материалы."
+                      : "Add more notes with overlapping tags to populate related entries here."}
                   </p>
                 )}
               </section>
 
               <section className="rounded-xl border border-border bg-card/70 p-6">
-                <p className="mb-2 font-mono text-xs text-primary">// next improvement</p>
+                <p className="mb-2 font-mono text-xs text-primary">
+                  {language === "ru" ? "// следующее улучшение" : "// next improvement"}
+                </p>
                 <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-                  Later, this page can render markdown/MDX notes while keeping the same shell and
-                  metadata blocks.
+                  {language === "ru"
+                    ? "Позже эту страницу можно перевести на рендер markdown/MDX, сохранив текущую структуру и блоки метаданных."
+                    : "Later, this page can render markdown/MDX notes while keeping the same shell and metadata blocks."}
                 </p>
                 <Link
                   to="/notes"
                   className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 font-mono text-sm text-primary transition-colors hover:bg-primary/10"
                 >
-                  Back to all notes
+                  {language === "ru" ? "Назад ко всем заметкам" : "Back to all notes"}
                   <span aria-hidden="true">{">"}</span>
                 </Link>
               </section>
@@ -209,11 +244,13 @@ const NoteDetailsPage = () => {
   );
 };
 
-const NoteContentRenderer = ({ blocks }: { blocks: NoteBlock[] }) => {
+const NoteContentRenderer = ({ blocks, language }: { blocks: NoteBlock[]; language: "en" | "ru" }) => {
   if (blocks.length === 0) {
     return (
       <p className="leading-relaxed text-muted-foreground">
-        No article content yet. Add blocks in `src/content/notes.ts`.
+        {language === "ru"
+          ? "Пока нет контента статьи. Добавьте блоки в `src/content/notes.ts`."
+          : "No article content yet. Add blocks in `src/content/notes.ts`."}
       </p>
     );
   }

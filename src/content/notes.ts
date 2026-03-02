@@ -1,3 +1,6 @@
+import type { Language } from "@/i18n/types";
+import { notesRuTranslations } from "@/content/notesTranslations";
+
 export type NoteBlock =
   | { type: "paragraph"; text: string }
   | { type: "heading"; text: string }
@@ -183,7 +186,7 @@ export const notes: NotePost[] = [
     content: [
       {
         type: "paragraph",
-        text: "Frontend work becomes slower when every endpoint returns a different error shape. Even simple projects benefit from one predictable API error envelope.",
+        text: "Client-side work becomes slower when every endpoint returns a different error shape. Even simple projects benefit from one predictable API error envelope.",
       },
       { type: "heading", text: "What I try to standardize" },
       {
@@ -216,7 +219,7 @@ export const notes: NotePost[] = [
     readTime: "6 min",
     summary:
       "What I learned from combining authentication, UI state, and non-trivial game logic in one application.",
-    tags: ["Java", "Spring", "Frontend", "Pet Project"],
+    tags: ["Java", "Spring", "Architecture", "Pet Project"],
     keyTakeaways: [
       "Complex domain logic deserves isolated tests early",
       "Authentication UX affects product feel more than expected",
@@ -309,3 +312,32 @@ export const notes: NotePost[] = [
 
 export const getPublishedNotes = () => notes.filter((note) => note.status === "published");
 export const getNoteBySlug = (slug: string) => notes.find((note) => note.slug === slug);
+
+const localizeNote = (note: NotePost, language: Language): NotePost => {
+  if (language !== "ru") {
+    return note;
+  }
+
+  const translation = notesRuTranslations[note.slug];
+  if (!translation) {
+    return note;
+  }
+
+  return {
+    ...note,
+    title: translation.title,
+    readTime: translation.readTime,
+    summary: translation.summary,
+    tags: translation.tags,
+    keyTakeaways: translation.keyTakeaways,
+    content: translation.content,
+  };
+};
+
+export const getLocalizedNotes = (language: Language): NotePost[] =>
+  notes.map((note) => localizeNote(note, language));
+
+export const getLocalizedNoteBySlug = (slug: string, language: Language): NotePost | undefined => {
+  const note = getNoteBySlug(slug);
+  return note ? localizeNote(note, language) : undefined;
+};

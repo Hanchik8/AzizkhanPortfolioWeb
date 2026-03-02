@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Terminal as TerminalIcon, X, Minus, Square } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const springBootAscii = `
   .   ____          _            __ _ _
@@ -25,6 +26,7 @@ const terminalLines = [
 ];
 
 const Terminal = () => {
+  const { language } = useLanguage();
   const [showAscii, setShowAscii] = useState(false);
   const [visibleLines, setVisibleLines] = useState<number>(0);
   const [isTyping, setIsTyping] = useState(true);
@@ -125,7 +127,9 @@ const Terminal = () => {
                 <div className="mt-4 flex items-center gap-2 border-t border-border/50 pt-4">
                   <span className="text-primary">$</span>
                   <span className="text-muted-foreground">
-                    Ready to connect. Let's build something amazing_
+                    {language === "ru"
+                      ? "Готов к сотрудничеству. Давайте сделаем что-то сильное_"
+                      : "Ready to connect. Let's build something amazing_"}
                   </span>
                   <span className="cursor-blink h-4 w-2 bg-primary" />
                 </div>

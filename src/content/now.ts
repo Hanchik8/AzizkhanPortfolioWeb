@@ -2,7 +2,7 @@ export const nowContent = {
   updatedAt: "2026-02-22",
   headline: "Backend-focused learning phase with stronger system design fundamentals.",
   summary:
-    "Right now I am focused on improving backend engineering depth (Spring Boot, security, distributed systems) while keeping enough frontend skill to ship polished full-stack portfolio and pet projects.",
+    "Right now I am focused on improving backend engineering depth (Spring Boot, security, distributed systems) and using frontend only as a support layer for portfolio pages and demos.",
   currentFocus: [
     "Spring Security internals and cleaner auth architecture",
     "Kafka patterns for event-driven flows and failure handling",

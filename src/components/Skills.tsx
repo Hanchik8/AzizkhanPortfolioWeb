@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { Code2, Layers, Database, Lightbulb, Monitor } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 interface SkillCategory {
   title: string;
@@ -8,7 +9,7 @@ interface SkillCategory {
   size: "large" | "medium" | "small";
 }
 
-const skillCategories: SkillCategory[] = [
+const skillCategoriesEn: SkillCategory[] = [
   {
     title: "Languages",
     icon: <Code2 className="h-5 w-5" />,
@@ -28,7 +29,7 @@ const skillCategories: SkillCategory[] = [
     size: "large",
   },
   {
-    title: "Frontend",
+    title: "Supporting Frontend",
     icon: <Monitor className="h-5 w-5" />,
     skills: ["React 18", "TypeScript", "Tailwind CSS", "React Router", "React Hook Form", "Vite"],
     size: "medium",
@@ -47,32 +48,43 @@ const skillCategories: SkillCategory[] = [
   },
 ];
 
+const skillCategoriesRu: SkillCategory[] = [
+  { ...skillCategoriesEn[0], title: "Языки" },
+  { ...skillCategoriesEn[1], title: "Backend-фреймворки" },
+  { ...skillCategoriesEn[2], title: "Поддерживающий frontend" },
+  { ...skillCategoriesEn[3], title: "Инфраструктура" },
+  { ...skillCategoriesEn[4], title: "Концепции" },
+];
+
 const Skills = () => {
+  const { language } = useLanguage();
+  const skillCategories = language === "ru" ? skillCategoriesRu : skillCategoriesEn;
+
   return (
     <section id="skills" className="relative py-24">
-      {/* Background accent */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
 
       <div className="container relative">
-        {/* Section header */}
         <div className="mb-16">
           <div className="mb-4 flex items-center gap-3">
             <span className="font-mono text-sm text-primary">03.</span>
-            <h2 className="font-mono text-3xl font-bold md:text-4xl">Skills & Technologies</h2>
+            <h2 className="font-mono text-3xl font-bold md:text-4xl">
+              {language === "ru" ? "Навыки и технологии" : "Skills & Technologies"}
+            </h2>
           </div>
           <div className="h-px max-w-md bg-gradient-to-r from-primary/50 via-border to-transparent" />
         </div>
 
-        {/* Bento grid */}
         <div className="grid auto-rows-fr grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {skillCategories.map((category, index) => (
             <SkillCard key={category.title} category={category} index={index} />
           ))}
         </div>
 
-        {/* Additional technologies */}
         <div className="mt-8 rounded-lg border border-border bg-card/50 p-6">
-          <h4 className="mb-4 font-mono text-sm text-primary">// Also experienced with</h4>
+          <h4 className="mb-4 font-mono text-sm text-primary">
+            {language === "ru" ? "// Дополнительно работал с" : "// Also experienced with"}
+          </h4>
           <div className="flex flex-wrap gap-3">
             {[
               "Netflix Eureka",
@@ -110,13 +122,11 @@ const SkillCard = ({ category, index }: { category: SkillCategory; index: number
       className={`card-hover animate-fade-in rounded-lg border border-border bg-card p-6 opacity-0 ${sizeClasses[category.size]}`}
       style={{ animationDelay: `${index * 100}ms` }}
     >
-      {/* Header */}
       <div className="mb-6 flex items-center gap-3">
         <div className="rounded-lg bg-primary/10 p-2 text-primary">{category.icon}</div>
         <h3 className="font-mono text-lg font-semibold">{category.title}</h3>
       </div>
 
-      {/* Skills */}
       <div className="flex flex-wrap gap-2">
         {category.skills.map((skill) => (
           <div

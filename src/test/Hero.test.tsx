@@ -11,7 +11,7 @@ describe("Hero", () => {
 
   it("renders the title/tagline", () => {
     render(<Hero />);
-    const elements = screen.getAllByText(/Full-Stack Developer/i);
+    const elements = screen.getAllByText(/Java\s*\/\s*Spring Developer/i);
     expect(elements.length).toBeGreaterThan(0);
   });
 

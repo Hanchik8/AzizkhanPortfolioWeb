@@ -1,12 +1,46 @@
 import { Link } from "react-router-dom";
 import { BookOpen, Clock3, FileText, Tag } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
-import { notes } from "@/content/notes";
+import { getLocalizedNotes } from "@/content/notes";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const NotesPage = () => {
+  const { language } = useLanguage();
+  const notes = getLocalizedNotes(language);
   const publishedCount = notes.filter((note) => note.status === "published").length;
   const draftCount = notes.length - publishedCount;
   const uniqueTags = new Set(notes.flatMap((note) => note.tags)).size;
+
+  const labels =
+    language === "ru"
+      ? {
+          pageTitle: "Заметки / Блог",
+          intro:
+            "Короткие технические заметки из проектов, экспериментов и практических уроков. Цель - фиксировать инженерное мышление короткими, полезными материалами.",
+          totalNotes: "Всего заметок",
+          published: "Опубликовано",
+          drafts: "Черновики",
+          topics: "Темы",
+          recentNotes: "Последние заметки",
+          keyTakeaways: "// ключевые выводы",
+          openNote: "Открыть заметку",
+          publishedStatus: "опубликовано",
+          draftStatus: "черновик",
+        }
+      : {
+          pageTitle: "Notes / Blog",
+          intro:
+            "Short technical notes from projects, experiments, and lessons learned. The goal is to document engineering thinking in small, useful pieces instead of waiting for a perfect long-form article.",
+          totalNotes: "Total Notes",
+          published: "Published",
+          drafts: "Drafts",
+          topics: "Topics",
+          recentNotes: "Recent Notes",
+          keyTakeaways: "// key takeaways",
+          openNote: "Open note",
+          publishedStatus: "published",
+          draftStatus: "draft",
+        };
 
   return (
     <SiteLayout>
@@ -18,18 +52,14 @@ const NotesPage = () => {
           <div className="container relative">
             <div className="mx-auto max-w-5xl rounded-2xl border border-border bg-card/70 p-8 backdrop-blur">
               <p className="mb-4 font-mono text-sm text-primary">/notes</p>
-              <h1 className="mb-4 font-mono text-4xl font-bold md:text-5xl">Notes / Blog</h1>
-              <p className="max-w-3xl leading-relaxed text-muted-foreground">
-                Short technical notes from projects, experiments, and lessons learned. The goal is
-                to document engineering thinking in small, useful pieces instead of waiting for a
-                perfect long-form article.
-              </p>
+              <h1 className="mb-4 font-mono text-4xl font-bold md:text-5xl">{labels.pageTitle}</h1>
+              <p className="max-w-3xl leading-relaxed text-muted-foreground">{labels.intro}</p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <StatCard label="Total Notes" value={String(notes.length)} icon={FileText} />
-                <StatCard label="Published" value={String(publishedCount)} icon={BookOpen} />
-                <StatCard label="Drafts" value={String(draftCount)} icon={Clock3} />
-                <StatCard label="Topics" value={String(uniqueTags)} icon={Tag} />
+                <StatCard label={labels.totalNotes} value={String(notes.length)} icon={FileText} />
+                <StatCard label={labels.published} value={String(publishedCount)} icon={BookOpen} />
+                <StatCard label={labels.drafts} value={String(draftCount)} icon={Clock3} />
+                <StatCard label={labels.topics} value={String(uniqueTags)} icon={Tag} />
               </div>
             </div>
           </div>
@@ -39,7 +69,7 @@ const NotesPage = () => {
           <div className="container">
             <div className="mb-10 flex items-center gap-3">
               <span className="font-mono text-sm text-primary">01.</span>
-              <h2 className="font-mono text-2xl font-bold md:text-3xl">Recent Notes</h2>
+              <h2 className="font-mono text-2xl font-bold md:text-3xl">{labels.recentNotes}</h2>
             </div>
 
             <div className="grid gap-5 lg:grid-cols-2">
@@ -67,13 +97,11 @@ const NotesPage = () => {
                           : "border border-border bg-secondary text-muted-foreground"
                       }`}
                     >
-                      {note.status}
+                      {note.status === "published" ? labels.publishedStatus : labels.draftStatus}
                     </span>
                   </div>
 
-                  <h3 className="mb-2 font-mono text-lg font-semibold text-foreground">
-                    {note.title}
-                  </h3>
+                  <h3 className="mb-2 font-mono text-lg font-semibold text-foreground">{note.title}</h3>
 
                   <div className="mb-4 flex flex-wrap items-center gap-3 font-mono text-xs text-muted-foreground">
                     <span>{note.publishedAt}</span>
@@ -84,7 +112,7 @@ const NotesPage = () => {
                   <p className="mb-4 leading-relaxed text-muted-foreground">{note.summary}</p>
 
                   <div className="rounded-lg border border-border/80 bg-background/40 p-4">
-                    <p className="mb-2 font-mono text-xs text-primary">// key takeaways</p>
+                    <p className="mb-2 font-mono text-xs text-primary">{labels.keyTakeaways}</p>
                     <ul className="space-y-2">
                       {note.keyTakeaways.map((takeaway) => (
                         <li key={takeaway} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -99,9 +127,11 @@ const NotesPage = () => {
                     <Link
                       to={`/notes/${note.slug}`}
                       className="inline-flex items-center gap-2 font-mono text-sm text-primary transition-colors hover:text-primary/80"
-                      aria-label={`Open note: ${note.title}`}
+                      aria-label={
+                        language === "ru" ? `Открыть заметку: ${note.title}` : `Open note: ${note.title}`
+                      }
                     >
-                      Open note
+                      {labels.openNote}
                       <span aria-hidden="true">{">"}</span>
                     </Link>
                   </div>

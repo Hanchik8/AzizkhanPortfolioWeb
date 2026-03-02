@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import ScrollManager from "@/components/ScrollManager";
+import { LanguageProvider, useLanguage } from "@/i18n/LanguageProvider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 const Index = lazy(() => import("./pages/Index"));
@@ -14,36 +15,42 @@ const NoteDetailsPage = lazy(() => import("./pages/NoteDetailsPage"));
 const NowPage = lazy(() => import("./pages/NowPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-const PageLoader = () => (
-  <div className="flex min-h-screen items-center justify-center bg-background">
-    <div className="flex items-center gap-3 font-mono text-sm text-muted-foreground">
-      <span className="cursor-blink h-4 w-2 bg-primary" />
-      <span>Loading...</span>
+const PageLoader = () => {
+  const { language } = useLanguage();
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex items-center gap-3 font-mono text-sm text-muted-foreground">
+        <span className="cursor-blink h-4 w-2 bg-primary" />
+        <span>{language === "ru" ? "Загрузка..." : "Loading..."}</span>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const App = () => (
-  <ThemeProvider>
-    <TooltipProvider>
+  <LanguageProvider>
+    <ThemeProvider>
+      <TooltipProvider>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <ScrollManager />
-        <Sonner />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/:id" element={<ProjectDetailsPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/notes" element={<NotesPage />} />
-            <Route path="/notes/:slug" element={<NoteDetailsPage />} />
-            <Route path="/now" element={<NowPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    </TooltipProvider>
-  </ThemeProvider>
+          <ScrollManager />
+          <Sonner />
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/projects/:id" element={<ProjectDetailsPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/notes" element={<NotesPage />} />
+              <Route path="/notes/:slug" element={<NoteDetailsPage />} />
+              <Route path="/now" element={<NowPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
+  </LanguageProvider>
 );
 
 export default App;

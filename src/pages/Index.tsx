@@ -7,8 +7,11 @@ import Contact from "@/components/Contact";
 import Terminal from "@/components/Terminal";
 import SiteLayout from "@/components/SiteLayout";
 import { getFeaturedProjects } from "@/content/projects";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const Index = () => {
+  const { language } = useLanguage();
+
   return (
     <SiteLayout>
       <>
@@ -17,7 +20,12 @@ const Index = () => {
         <Projects
           items={getFeaturedProjects()}
           showViewAllLink
-          description="Selected backend and full-stack projects. Open a case study for architecture decisions, challenges, and next steps."
+          title={language === "ru" ? "Избранные проекты" : "Featured Projects"}
+          description={
+            language === "ru"
+              ? "Избранные Java/Spring backend-проекты. Откройте кейс, чтобы посмотреть архитектурные решения, trade-off'ы и следующие шаги."
+              : "Selected Java/Spring backend projects. Open a case study for architecture decisions, tradeoffs, and next steps."
+          }
         />
         <Skills />
         <About />

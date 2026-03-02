@@ -75,9 +75,9 @@ export const projects: Project[] = [
   {
     id: "web-chess",
     title: "Web Chess",
-    subtitle: "Full-Stack Chess Application",
+    subtitle: "Java/Spring Chess Platform",
     description:
-      "Full-featured web application for playing chess with registration, authorization, and user statistics. Backend on Java Spring Boot with Spring Security, frontend on HTML/CSS/Vanilla JS.",
+      "Chess web application with registration, authorization, and user statistics. Core backend is Java Spring Boot with Spring Security, and the client UI is HTML/CSS/Vanilla JS.",
     techStack: ["Java", "Spring Boot", "Spring Security", "PostgreSQL", "JavaScript", "HTML/CSS"],
     highlights: [
       "Custom Remember Me Implementation",
@@ -92,7 +92,7 @@ export const projects: Project[] = [
     featured: true,
     caseStudy: {
       problem:
-        "Create a full chess web app with secure authentication and correct game mechanics, including move validation and check/checkmate logic.",
+        "Create a chess platform with secure authentication and correct game mechanics, including move validation and check/checkmate logic.",
       solution:
         "Built a Spring Boot backend with Spring Security and PostgreSQL, then implemented an interactive frontend for board rendering, move highlighting, and player interactions.",
       architectureNotes: [

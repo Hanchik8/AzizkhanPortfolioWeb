@@ -3,27 +3,50 @@ import { Briefcase, GraduationCap, Target } from "lucide-react";
 import About from "@/components/About";
 import Skills from "@/components/Skills";
 import SiteLayout from "@/components/SiteLayout";
-import { siteConfig } from "@/content/siteConfig";
-
-const resumeCards = [
-  {
-    title: "Current Focus",
-    icon: Target,
-    text: "Backend engineering with Java and Spring Boot, plus system design fundamentals and distributed systems patterns.",
-  },
-  {
-    title: "Education",
-    icon: GraduationCap,
-    text: `${siteConfig.education.degree} at ${siteConfig.education.university} (${siteConfig.education.years}).`,
-  },
-  {
-    title: "Opportunity Goal",
-    icon: Briefcase,
-    text: "Seeking internship opportunities where I can contribute to real products and grow in backend/full-stack engineering.",
-  },
-];
+import { getSiteConfig } from "@/content/siteConfig";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const AboutPage = () => {
+  const { language } = useLanguage();
+  const siteConfig = getSiteConfig(language);
+
+  const resumeCards =
+    language === "ru"
+      ? [
+          {
+            title: "Текущий фокус",
+            icon: Target,
+            text: "Backend-инженерия на Java и Spring Boot, а также системный дизайн и паттерны распределенных систем.",
+          },
+          {
+            title: "Образование",
+            icon: GraduationCap,
+            text: `${siteConfig.education.degree} в ${siteConfig.education.university} (${siteConfig.education.years}).`,
+          },
+          {
+            title: "Цель",
+            icon: Briefcase,
+            text: "Ищу стажировку, где смогу приносить пользу реальному продукту и расти как Java/Spring backend-инженер.",
+          },
+        ]
+      : [
+          {
+            title: "Current Focus",
+            icon: Target,
+            text: "Backend engineering with Java and Spring Boot, plus system design fundamentals and distributed systems patterns.",
+          },
+          {
+            title: "Education",
+            icon: GraduationCap,
+            text: `${siteConfig.education.degree} at ${siteConfig.education.university} (${siteConfig.education.years}).`,
+          },
+          {
+            title: "Opportunity Goal",
+            icon: Briefcase,
+            text: "Seeking internship opportunities where I can contribute to real products and grow in Java/Spring backend engineering.",
+          },
+        ];
+
   return (
     <SiteLayout>
       <>
@@ -33,11 +56,13 @@ const AboutPage = () => {
           <div className="container relative">
             <div className="mx-auto max-w-4xl">
               <p className="mb-4 font-mono text-sm text-primary">/about</p>
-              <h1 className="mb-4 font-mono text-4xl font-bold md:text-5xl">About / Resume</h1>
+              <h1 className="mb-4 font-mono text-4xl font-bold md:text-5xl">
+                {language === "ru" ? "Обо мне / Резюме" : "About / Resume"}
+              </h1>
               <p className="max-w-3xl leading-relaxed text-muted-foreground">
-                A more detailed overview of who I am, what I build, and what kind of engineering
-                work I want to grow into. I kept the same terminal-inspired visual style as the
-                homepage, but structured it as a dedicated page.
+                {language === "ru"
+                  ? "Подробный обзор: кто я, какие системы разрабатываю и в каком направлении хочу расти как инженер. Сохранил тот же терминальный стиль, что и на главной, но в формате отдельной страницы."
+                  : "A more detailed overview of who I am, what I build, and what kind of engineering work I want to grow into. I kept the same terminal-inspired visual style as the homepage, but structured it as a dedicated page."}
               </p>
 
               <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -73,24 +98,27 @@ const AboutPage = () => {
             <div className="mx-auto max-w-4xl rounded-2xl border border-border bg-card p-6 md:p-8">
               <div className="mb-4 flex items-center gap-3">
                 <span className="font-mono text-sm text-primary">05.</span>
-                <h2 className="font-mono text-2xl font-bold">Next Step</h2>
+                <h2 className="font-mono text-2xl font-bold">
+                  {language === "ru" ? "Следующий шаг" : "Next Step"}
+                </h2>
               </div>
               <p className="mb-6 leading-relaxed text-muted-foreground">
-                If you want to evaluate my work faster, start with the project case studies. They
-                show how I think about architecture, tradeoffs, and implementation details.
+                {language === "ru"
+                  ? "Если хотите быстро оценить мой инженерный подход, начните с кейсов проектов. Там показаны архитектурные решения, trade-off'ы и детали реализации."
+                  : "If you want to evaluate my work faster, start with the project case studies. They show how I think about architecture, tradeoffs, and implementation details."}
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link
                   to="/projects"
                   className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 font-mono text-sm text-primary transition-colors hover:bg-primary/10"
                 >
-                  Open project archive
+                  {language === "ru" ? "Открыть архив проектов" : "Open project archive"}
                 </Link>
                 <a
                   href="/#contact"
                   className="inline-flex items-center rounded-lg border border-border px-4 py-2 font-mono text-sm transition-colors hover:border-primary/30 hover:text-primary"
                 >
-                  Contact me
+                  {language === "ru" ? "Связаться" : "Contact me"}
                 </a>
               </div>
             </div>

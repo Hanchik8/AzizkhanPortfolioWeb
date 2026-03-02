@@ -7,7 +7,7 @@
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-> Portfolio website presenting projects, skills, and professional experience as a Full-Stack Developer.
+> Portfolio website presenting projects, skills, and professional experience as a Java/Spring Developer.
 
 **Live Site:** [azizkhan.dev](https://azizkhan.dev)
 
